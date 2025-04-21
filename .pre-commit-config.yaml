@@ -96,4 +96,8 @@ repos:
     rev: 63c8f8312b7559622c0d82815639671ae42132ac # frozen: v2.4.1
     hooks:
       - id: codespell
-        args: [--skip="*.json\, ./dist/index.js"]
+        exclude: |
+            (?x)^(
+                dist/index.js|
+                package-lock.json
+            )$
