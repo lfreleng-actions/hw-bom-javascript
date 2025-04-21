@@ -1,19 +1,21 @@
 <!--
-SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+SPDX-FileCopyrightText: 2025 The Linux Foundation
 
 SPDX-License-Identifier: Apache-2.0
 -->
 
 # Hardware Bill of Materials (HW-BOM) GitHub Action
 
-This GitHub Action collects detailed hardware information from cloud provider instances and makes it available as workflow outputs. It's particularly useful for:
+This GitHub Action collects detailed hardware information from cloud provider
+instances and makes it available as workflow outputs. It's useful for:
+
 - Documenting hardware specifications in CI/CD pipelines
 - Validating instance types and hardware capabilities
 - Generating hardware inventory reports
 
 ## Features
 
-- Supports multiple cloud providers (AWS, Azure, GCE, OpenStack)
+- Supports cloud providers AWS, Azure (Github Actions), GCE, OpenStack
 - Collects comprehensive hardware information:
   - Cloud provider and instance type
   - CPU information (model, vendor, core count)
@@ -21,7 +23,7 @@ This GitHub Action collects detailed hardware information from cloud provider in
   - Memory and disk information
   - System information (hostname, uname)
 - Provides all information as workflow outputs
-- Handles errors gracefully with appropriate error messages
+- Handles errors with appropriate error messages
 
 ## Usage
 
@@ -34,11 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Collect Hardware Information
         id: hw-info
-        uses: jordanconway/hw-bom@v1
-        
+        uses: lfreleng-actions/hw-bom-javascript@v1
+
       - name: Display Hardware Information
         run: |
           echo "Cloud Provider: ${{ steps.hw-info.outputs.cloud }}"
@@ -82,11 +84,12 @@ The action provides the following outputs:
 
 ## Error Handling
 
-The action handles errors gracefully:
+The action handles errors :
+
 - Failed commands return "Error executing command"
 - Failed metadata queries return appropriate error messages
-- All errors are logged and the action fails with a descriptive message
+- Action logs all errors and the action fails with a descriptive message
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Licensed under the Apache v2.0 License - see the [LICENSE](LICENSE) file for details.
