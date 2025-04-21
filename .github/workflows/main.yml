@@ -32,11 +32,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Collect Hardware Information 🔎 
+
+      - name: Collect Hardware Information 🔎
         id: hw-info
         uses: ./
-        
+
       - name: Display Hardware Information 🖥️
         run: |
           echo "Cloud Provider: ${{ steps.hw-info.outputs.cloud }}"

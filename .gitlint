@@ -28,7 +28,7 @@
 # extra-path=examples/
 #WARNING: I1 - ignore-by-title: gitlint will be switching from using Python regex 'match' (match beginning) to
 #'search' (match anywhere) semantics. Please review your ignore-by-title.regex option accordingly.
-#To remove this warning, set general.regex-style-search=True. 
+#To remove this warning, set general.regex-style-search=True.
 #More details: https://jorisroovers.github.io/gitlint/configuration/#regex-style-search
 regex-style-search=true
 
