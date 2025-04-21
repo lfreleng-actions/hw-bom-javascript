@@ -1,0 +1,12 @@
+version = 1
+# Computer-generated files or json
+[[annotations]]
+path = [
+    "dist/index.js",
+    "package-lock.json",
+    "package.json",
+    "tsconfig.json",
+    ".prettierrc.json"
+]
+SPDX-FileCopyrightText =  "2025 The Linux Foundation"
+SPDX-License-Identifier = "Apache-2.0"
