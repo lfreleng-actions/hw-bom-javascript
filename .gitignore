@@ -47,7 +47,7 @@ coverage.xml
 
 # Build and docs folder/files
 build/*
-dist/*
+# dist/* - # Don't ignore dist for this github action
 sdist/*
 docs/api/*
 docs/_rst/*
