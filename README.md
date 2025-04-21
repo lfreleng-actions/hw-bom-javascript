@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+SPDX-FileCopyrightText: 2025 The Linux Foundation
 
 SPDX-License-Identifier: Apache-2.0
 -->
@@ -91,4 +91,4 @@ The action handles errors gracefully:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the Apache v2.0 License - see the [LICENSE](LICENSE) file for details.
