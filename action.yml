@@ -1,0 +1,55 @@
+# SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: 'Hardware Bill of Materials'
+description: 'A GitHub Action to generate a hardware bill of materials'
+outputs:
+  cloud: # id of the output
+    description: 'The Cloud Provider'
+    value: ${{ steps.get-hw-bom.outputs.cloud }}
+  instanceType: # id of the output
+    description: 'The Instance Type'
+    value: ${{ steps.get-hw-bom.outputs.instanceType }}
+  uname: # id of the output
+    description: 'The Uname of the machine'
+    value: ${{ steps.get-hw-bom.outputs.uname }}
+  display: # id of the output
+    description: 'The Display of the machine'
+    value: ${{ steps.get-hw-bom.outputs.display }}
+  cpu: # id of the output
+    description: 'The CPU of the machine'
+    value: ${{ steps.get-hw-bom.outputs.cpu }}
+  cpuVendor: # id of the output
+    description: 'The CPU Vendor of the machine'
+    value: ${{ steps.get-hw-bom.outputs.cpuVendor }}
+  cpuModel: # id of the output
+    description: 'The CPU Model of the machine'
+    value: ${{ steps.get-hw-bom.outputs.cpuModel }}
+  cpuNumProc: # id of the output
+    description: 'The CPU Cores of the machine'
+    value: ${{ steps.get-hw-bom.outputs.cpuNumProc }}
+  hostname: # id of the output
+    description: 'The Hostname of the machine'
+    value: ${{ steps.get-hw-bom.outputs.hostname }}
+  gpuVendor: # id of the output
+    description: 'The GPU Vendor of the machine'
+    value: ${{ steps.get-hw-bom.outputs.gpuVendor }}
+  gpuModel: # id of the output
+    description: 'The GPU Model of the machine'
+    value: ${{ steps.get-hw-bom.outputs.gpuModel }}
+  memTotal: # id of the output
+    description: 'The Total Memory of the machine'
+    value: ${{ steps.get-hw-bom.outputs.memTotal }}
+  diskTotal: # id of the output
+    description: 'The Total Disk of the machine'
+    value: ${{ steps.get-hw-bom.outputs.diskTotal }}
+  diskFree: # id of the output
+    description: 'The Free Disk of the machine'
+    value: ${{ steps.get-hw-bom.outputs.diskFree }}
+  diskUsed: # id of the output
+    description: 'The Used Disk of the machine'
+    value: ${{ steps.get-hw-bom.outputs.diskUsed }}
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

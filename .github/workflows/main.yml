@@ -1,0 +1,52 @@
+# SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
+#
+# SPDX-License-Identifier: Apache-2.0
+
+name: Test hw-bom GitHub Action 🧪
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-job:
+    name: Test hw-bom GitHub Action TypeScript 🧪
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Use Node 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Test and build
+      run: npm run check-all
+  dogfood:
+    name: Run hw-bom GitHub Action on this repository 🐶🍖
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Collect Hardware Information 🔎 
+        id: hw-info
+        uses: ./
+        
+      - name: Display Hardware Information 🖥️
+        run: |
+          echo "Cloud Provider: ${{ steps.hw-info.outputs.cloud }}"
+          echo "Instance Type: ${{ steps.hw-info.outputs.instanceType }}"
+          echo "CPU: ${{ steps.hw-info.outputs.cpu }}"
+          echo "CPU Vendor: ${{ steps.hw-info.outputs.cpuVendor }}"
+          echo "CPU Cores: ${{ steps.hw-info.outputs.cpuNumProc }}"
+          echo "GPU Vendor: ${{ steps.hw-info.outputs.gpuVendor }}"
+          echo "GPU Model: ${{ steps.hw-info.outputs.gpuModel }}"
+          echo "Memory: ${{ steps.hw-info.outputs.memTotal }}"
+          echo "Disk Total: ${{ steps.hw-info.outputs.diskTotal }}"
+          echo "Disk Used: ${{ steps.hw-info.outputs.diskUsed }}"
+          echo "Disk Free: ${{ steps.hw-info.outputs.diskFree }}"
