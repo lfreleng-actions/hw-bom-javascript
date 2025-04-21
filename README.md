@@ -37,7 +37,7 @@ jobs:
       
       - name: Collect Hardware Information
         id: hw-info
-        uses: jordanconway/hw-bom@v1
+        uses: lfreleng-actions/hw-bom-javascript@v1
         
       - name: Display Hardware Information
         run: |
