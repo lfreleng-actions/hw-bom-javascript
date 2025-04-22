@@ -41,6 +41,7 @@ jobs:
         run: |
           echo "Cloud Provider: ${{ steps.hw-info.outputs.cloud }}"
           echo "Instance Type: ${{ steps.hw-info.outputs.instanceType }}"
+          echo "Workflow RunID: ${{ steps.hw-info.outputs.workflowRun }}"
           echo "CPU: ${{ steps.hw-info.outputs.cpu }}"
           echo "CPU Vendor: ${{ steps.hw-info.outputs.cpuVendor }}"
           echo "CPU Cores: ${{ steps.hw-info.outputs.cpuNumProc }}"
