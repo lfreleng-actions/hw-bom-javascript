@@ -5,6 +5,7 @@
 import {jest} from '@jest/globals'
 import {execSync} from 'child_process'
 import * as core from '@actions/core'
+import * as github from '@actions/github'
 import {
   run,
   getAwsToken,
@@ -172,6 +173,10 @@ describe('GitHub Action Tests', () => {
         return Buffer.from(commandOutputs[command as string] || '')
       })
 
+      // Mock Github context
+      github.context.runId = 1234567890
+      expect(github.context.runId).toBe(1234567890)
+
       // Mock AWS token and instance type responses
       mockFetch
         .mockResolvedValueOnce({
@@ -199,10 +204,12 @@ describe('GitHub Action Tests', () => {
         'NVIDIA Corporation'
       )
       expect(core.setOutput).toHaveBeenCalledWith('gpuModel', 'Tesla T4')
+      expect(core.setOutput).toHaveBeenCalledWith('gpuModel', 'Tesla T4')
       expect(core.setOutput).toHaveBeenCalledWith('memTotal', '8192 MB')
       expect(core.setOutput).toHaveBeenCalledWith('diskTotal', '100G')
       expect(core.setOutput).toHaveBeenCalledWith('diskUsed', '50G')
       expect(core.setOutput).toHaveBeenCalledWith('diskFree', '50G')
+      expect(core.setOutput).toHaveBeenCalledWith('workflowRun', '1234567890')
     })
     it('should handle errors and set failed status', async () => {
       ;(core.setOutput as jest.Mock).mockImplementation(() => {

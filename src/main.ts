@@ -6,6 +6,7 @@
 
 import {execSync} from 'child_process'
 import * as core from '@actions/core'
+import * as github from '@actions/github'
 
 export async function getAwsToken(): Promise<string> {
   try {
@@ -95,6 +96,7 @@ export async function run(): Promise<void> {
     const awsToken = cloud === 'aws' ? await getAwsToken() : ''
     const instanceType = await getInstanceType(cloud, awsToken)
     const uname = runCommand('uname -a')
+    const workflowRun = github.context.runId.toString()
     const cpu = runCommand(
       'cat /proc/cpuinfo |grep "model name"|sort -u|cut -d ":" -f2|awk \'{$1=$1};1\''
     )
@@ -124,6 +126,7 @@ export async function run(): Promise<void> {
     core.setOutput('diskTotal', diskTotal)
     core.setOutput('diskUsed', diskUsed)
     core.setOutput('diskFree', diskFree)
+    core.setOutput('workflowRun', workflowRun)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
