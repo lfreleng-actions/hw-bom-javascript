@@ -8,6 +8,9 @@ outputs:
   cloud: # id of the output
     description: 'The Cloud Provider'
     value: ${{ steps.get-hw-bom.outputs.cloud }}
+  workflowRun: # id of the output
+    description: 'Github Workflow ID'
+    value: ${{ steps.get-hw-hom.outputs.workflowRun }}
   instanceType: # id of the output
     description: 'The Instance Type'
     value: ${{ steps.get-hw-bom.outputs.instanceType }}

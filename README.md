@@ -16,6 +16,7 @@ instances and makes it available as workflow outputs. It's useful for:
 ## Features
 
 - Supports cloud providers AWS, Azure (Github Actions), GCE, OpenStack
+- Collects workflow runId
 - Collects comprehensive hardware information:
   - Cloud provider and instance type
   - CPU information (model, vendor, core count)
@@ -43,6 +44,7 @@ jobs:
 
       - name: Display Hardware Information
         run: |
+          echo "Workflow RunID: ${{ steps.hw-info.outputs.workflowRun }}"
           echo "Cloud Provider: ${{ steps.hw-info.outputs.cloud }}"
           echo "Instance Type: ${{ steps.hw-info.outputs.instanceType }}"
           echo "CPU: ${{ steps.hw-info.outputs.cpu }}"
@@ -63,6 +65,7 @@ The action provides the following outputs:
 | Output Name | Description |
 |-------------|-------------|
 | `cloud` | Cloud provider name (aws, azure, gce, openstack) |
+| `workflowRun` | Github Aciton Worfklow ID |
 | `instanceType` | Instance type/size |
 | `uname` | System information from uname -a |
 | `cpu` | CPU model name |
