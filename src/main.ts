@@ -7,9 +7,89 @@
 import {execSync} from 'child_process'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import winston from 'winston'
+import {resourceFromAttributes} from '@opentelemetry/resources'
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION
+} from '@opentelemetry/semantic-conventions'
+import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-http'
+import bunyan from 'bunyan'
+import {LoggerProvider, SimpleLogRecordProcessor} from '@opentelemetry/sdk-logs'
+import {ValueType} from '@opentelemetry/api'
 
-const logger = winston.createLogger()
+const serviceName =
+  core.getInput('otel_service_name') || 'github-actions-hw-bom'
+const resource = resourceFromAttributes({
+  [ATTR_SERVICE_NAME]: serviceName,
+  [ATTR_SERVICE_VERSION]: '1.0.0'
+})
+
+const otelExporterOTLPEndpoint =
+  core.getInput('otel_exporter_otlp_endpoint') ||
+  process.env.OTEL_EXPORTER_OTLP_ENDPOINT ||
+  'http://localhost:4317'
+const otelExporterOTLPHeaders =
+  core.getInput('otel_exporter_otlp_headers') ||
+  process.env.OTEL_EXPORTER_OTLP_HEADERS ||
+  'key:value'
+
+const otlpExporter = new OTLPLogExporter({
+  url: otelExporterOTLPEndpoint + '/v1/logs',
+  headers: {otelExporterOTLPHeaders}
+})
+
+const loggerProvider = new LoggerProvider({
+  resource: resource
+})
+loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(otlpExporter))
+
+const logger = bunyan.createLogger({
+  name: serviceName,
+  streams: [
+    {
+      level: 'info',
+      stream: process.stdout
+    }
+  ]
+})
+
+// Add a custom stream for OpenTelemetry
+logger.addStream({
+  level: 'info',
+  type: 'raw',
+  stream: {
+    write: (obj: object) => {
+      const record = obj as {
+        level: number
+        msg: string
+        time: Date
+        v: number
+        name: string
+        pid: number
+        hostname: string
+        [key: string]: unknown
+      }
+
+      const attributes: Record<string, ValueType> = {}
+      // Convert Bunyan record to OpenTelemetry attributes
+      Object.entries(record).forEach(([key, value]) => {
+        if (
+          typeof value === 'string' ||
+          typeof value === 'number' ||
+          typeof value === 'boolean'
+        ) {
+          attributes[key] = value as ValueType
+        }
+      })
+
+      loggerProvider.getLogger('hw-bom').emit({
+        severityText: 'INFO',
+        body: record.msg,
+        attributes
+      })
+    }
+  }
+})
 
 export async function getAwsToken(): Promise<string> {
   try {
@@ -148,12 +228,10 @@ export async function run(): Promise<void> {
       }
     }
     logger.info(
-      'Hardware Bill of Materials for Workflow Run ' + workflowRun,
-      hwBom
+      hwBom,
+      'Hardware Bill of Materials for Workflow Run ' + workflowRun
     )
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
-
-run()
