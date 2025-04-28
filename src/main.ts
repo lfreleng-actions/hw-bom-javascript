@@ -7,6 +7,9 @@
 import {execSync} from 'child_process'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+import winston from 'winston'
+
+const logger = winston.createLogger()
 
 export async function getAwsToken(): Promise<string> {
   try {
@@ -127,6 +130,27 @@ export async function run(): Promise<void> {
     core.setOutput('diskUsed', diskUsed)
     core.setOutput('diskFree', diskFree)
     core.setOutput('workflowRun', workflowRun)
+    const hwBom = {
+      [workflowRun]: {
+        cloud: cloud,
+        instanceType: instanceType,
+        uname: uname,
+        cpu: cpu,
+        cpuVendor: cpuVendor,
+        cpuNumProc: cpuNumProc,
+        hostname: hostname,
+        gpuVendor: gpuVendor,
+        gpuModel: gpuModel,
+        memTotal: memTotal,
+        diskTotal: diskTotal,
+        diskUsed: diskUsed,
+        diskFree: diskFree
+      }
+    }
+    logger.info(
+      'Hardware Bill of Materials for Workflow Run ' + workflowRun,
+      hwBom
+    )
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
