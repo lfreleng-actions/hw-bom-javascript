@@ -33,7 +33,7 @@ repos:
           - --branch=production
 
   - repo: https://github.com/eclipse-csi/octopin
-    rev: 78c08da356414f41e206b61d51e5163d8b40626e
+    rev: v0.1.2
     hooks:
       - id: pin-versions
 
@@ -49,7 +49,7 @@ repos:
         types: [yaml]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: d119aaff6891558b6eaf52518386871d1d267131  # frozen: v0.11.6
+    rev: e84319e627902e1b348574ecf3238dc511933dc7  # frozen: v0.11.7
     hooks:
       - id: ruff
         files: ^(scripts|tests|custom_components)/.+\.py$
