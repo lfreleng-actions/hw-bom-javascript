@@ -5,7 +5,7 @@
   "main": "dist/upload/index.js",
   "scripts": {
     "build": "tsc",
-    "release": "ncc build src/index.ts --out dist && ncc build src/main.ts --out dist/",
+    "release": "ncc build src/index.ts --out dist --out dist/ && ncc build src/main.ts --out dist/",
     "check-all": "concurrently \"npm:format-check\" \"npm:lint\" \"npm:test\" \"npm:build\"",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
@@ -30,8 +30,10 @@
   "homepage": "https://github.com/jordanconway/hw-bom#readme",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.1"
+    "@actions/github": "^6.0.1",
     "@opentelemetry/auto-instrumentations-node": "^0.58.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.200.0",
+    "@opentelemetry/exporter-logs-otlp-proto": "^0.200.0",
     "@opentelemetry/resources": "^2.0.0",
     "@opentelemetry/sdk-logs": "^0.200.0",
     "@opentelemetry/sdk-node": "^0.200.0",
