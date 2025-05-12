@@ -9,9 +9,8 @@ import {
 } from '@opentelemetry/semantic-conventions'
 import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-http'
 
-const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') || 'http://localhost:4317'
-const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') || ''
-
+const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') || process.env.OTEL_EXPORTER_OTLP_ENDPOINT || 'http://localhost:4317'
+const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') || process.env.OTEL_EXPORTER_OTLP_HEADERS || ''
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: 'hw-bom-github-action',
