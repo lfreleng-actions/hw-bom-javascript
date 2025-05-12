@@ -9,8 +9,8 @@ import {
 } from '@opentelemetry/semantic-conventions'
 import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-http'
 
-const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint')
-const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers')
+const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') || 'http://localhost:4317'
+const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') || ''
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
