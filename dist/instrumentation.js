@@ -64,6 +64,9 @@ try {
     sdk.start();
     console.log('OpenTelemetry SDK started');
     console.log('Sending logs to:', otelExporterOTLPEndpoint);
+    console.log('Using headers:', otelExporterOTLPHeaders);
+    console.log('Service name:', semantic_conventions_1.ATTR_SERVICE_NAME);
+    console.log('Service version:', semantic_conventions_1.ATTR_SERVICE_VERSION);
 }
 catch (error) {
     console.error('Error starting OpenTelemetry SDK:', error);
