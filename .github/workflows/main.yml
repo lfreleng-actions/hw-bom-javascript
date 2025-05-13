@@ -55,8 +55,9 @@ jobs:
       - name: Collect Hardware Information 🔎
         id: hw-info
         uses: ./
+        secrets: inherit
         with:
-          otel_exporter_otlp_headers: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+          otel_exporter_otlp_headers: ${{ secrets.SECRET_OTEL_EXPORTER_OTLP_HEADERS }}
           otel_exporter_otlp_endpoint: 'https://api.honeycomb.io'
 
       - name: Display Hardware Information 🖥️
