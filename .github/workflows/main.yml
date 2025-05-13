@@ -4,10 +4,28 @@
 
 name: Test hw-bom GitHub Action 🧪
 on:
+  workflow_call:
+    inputs:
+      otel_service_name:
+        type: string
+        description: 'The name of the service'
+        required: true
+        default: 'github-action-hw-bom'
+      otel_exporter_otlp_endpoint:
+        type: string
+        description: 'The endpoint to use for the OTLP exporter'
+        required: false
+      otel_exporter_otlp_headers:
+        type: string
+        description: 'The headers to use for the OTLP exporter'
+        required: false
+    secrets:
+      OTEL_EXPORTER_OTLP_HEADERS:
+        required: false
   push:
-    branches: [main]
+    branches: [main,add_otel]
   pull_request:
-    branches: [main]
+    branches: [main,add_otel]
 
 jobs:
   test-job:
@@ -32,10 +50,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Collect Hardware Information 🔎
         id: hw-info
         uses: ./
+        with:
+          otel_exporter_otlp_headers: ${{ secrets.OTEL_EXPORTER_OTLP_HEADERS }}
+          otel_exporter_otlp_endpoint: 'https://api.honeycomb.io'
 
       - name: Display Hardware Information 🖥️
         run: |
