@@ -48,12 +48,12 @@ const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') ||
     'key:value';
 const sdk = new sdk_node_1.NodeSDK({
     resource: (0, resources_1.resourceFromAttributes)({
-        ATTR_SERVICE_NAME: core.getInput('otel_service_name') || 'github-actions-hw-bom',
-        ATTR_SERVICE_VERSION: '1.0.0'
+        [semantic_conventions_1.ATTR_SERVICE_NAME]: core.getInput('otel_service_name') || 'github-actions-hw-bom',
+        [semantic_conventions_1.ATTR_SERVICE_VERSION]: '1.0.0'
     }),
     logRecordProcessors: [
         new sdk_logs_1.SimpleLogRecordProcessor(new exporter_logs_otlp_proto_1.OTLPLogExporter({
-            url: otelExporterOTLPEndpoint + '/v1/logs',
+            url: otelExporterOTLPEndpoint,
             headers: { otelExporterOTLPHeaders }
         })),
         new sdk_logs_1.SimpleLogRecordProcessor(new sdk_logs_1.ConsoleLogRecordExporter())
@@ -65,8 +65,6 @@ try {
     console.log('OpenTelemetry SDK started');
     console.log('Sending logs to:', otelExporterOTLPEndpoint);
     console.log('Using headers:', otelExporterOTLPHeaders);
-    console.log('Service name:', semantic_conventions_1.ATTR_SERVICE_NAME);
-    console.log('Service version:', semantic_conventions_1.ATTR_SERVICE_VERSION);
 }
 catch (error) {
     console.error('Error starting OpenTelemetry SDK:', error);
