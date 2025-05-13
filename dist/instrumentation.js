@@ -63,6 +63,7 @@ const sdk = new sdk_node_1.NodeSDK({
 try {
     sdk.start();
     console.log('OpenTelemetry SDK started');
+    console.log('Sending logs to:', otelExporterOTLPEndpoint);
 }
 catch (error) {
     console.error('Error starting OpenTelemetry SDK:', error);
