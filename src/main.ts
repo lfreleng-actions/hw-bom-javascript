@@ -8,8 +8,10 @@ import {execSync} from 'child_process'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import winston from 'winston'
-
-const logger = winston.createLogger()
+import {OpenTelemetryTransportV3} from '@opentelemetry/winston-transport'
+const logger = winston.createLogger({
+  transports: [new winston.transports.Console(), new OpenTelemetryTransportV3()]
+})
 
 export async function getAwsToken(): Promise<string> {
   try {
