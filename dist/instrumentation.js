@@ -53,7 +53,7 @@ const sdk = new sdk_node_1.NodeSDK({
     }),
     logRecordProcessors: [
         new sdk_logs_1.SimpleLogRecordProcessor(new exporter_logs_otlp_proto_1.OTLPLogExporter({
-            url: otelExporterOTLPEndpoint,
+            url: otelExporterOTLPEndpoint + '/v1/logs',
             headers: { otelExporterOTLPHeaders }
         })),
         new sdk_logs_1.SimpleLogRecordProcessor(new sdk_logs_1.ConsoleLogRecordExporter())

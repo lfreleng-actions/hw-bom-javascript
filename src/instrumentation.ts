@@ -29,7 +29,7 @@ const sdk = new NodeSDK({
   logRecordProcessors: [
     new SimpleLogRecordProcessor(
       new OTLPLogExporter({
-        url: otelExporterOTLPEndpoint,
+        url: otelExporterOTLPEndpoint + '/v1/logs',
         headers: {otelExporterOTLPHeaders}
       })
     ),
