@@ -49,7 +49,10 @@ const child_process_1 = require("child_process");
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));
 const winston_1 = __importDefault(require("winston"));
-const logger = winston_1.default.createLogger();
+const winston_transport_1 = require("@opentelemetry/winston-transport");
+const logger = winston_1.default.createLogger({
+    transports: [new winston_1.default.transports.Console(), new winston_transport_1.OpenTelemetryTransportV3()]
+});
 async function getAwsToken() {
     try {
         const response = await fetch('http://169.254.169.254/latest/api/token', {
