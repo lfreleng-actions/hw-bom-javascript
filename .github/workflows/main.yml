@@ -23,9 +23,9 @@ on:
       OTEL_EXPORTER_OTLP_HEADERS:
         required: false
   push:
-    branches: [main,add_otel]
+    branches: [main, add_otel]
   pull_request:
-    branches: [main,add_otel]
+    branches: [main, add_otel]
 
 jobs:
   test-job:
@@ -50,6 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: npm ci
       - name: Collect Hardware Information 🔎
         id: hw-info
         uses: ./
