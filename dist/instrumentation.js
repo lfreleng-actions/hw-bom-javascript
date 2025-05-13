@@ -48,8 +48,8 @@ const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') ||
     'key:value';
 const sdk = new sdk_node_1.NodeSDK({
     resource: (0, resources_1.resourceFromAttributes)({
-        [semantic_conventions_1.ATTR_SERVICE_NAME]: 'hw-bom-github-action',
-        [semantic_conventions_1.ATTR_SERVICE_VERSION]: '1.0.0'
+        ATTR_SERVICE_NAME: core.getInput('otel_service_name') || 'github-actions-hw-bom',
+        ATTR_SERVICE_VERSION: '1.0.0'
     }),
     logRecordProcessors: [
         new sdk_logs_1.SimpleLogRecordProcessor(new exporter_logs_otlp_proto_1.OTLPLogExporter({

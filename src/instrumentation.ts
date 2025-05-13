@@ -22,8 +22,9 @@ const otelExporterOTLPHeaders =
   'key:value'
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
-    [ATTR_SERVICE_NAME]: 'hw-bom-github-action',
-    [ATTR_SERVICE_VERSION]: '1.0.0'
+    ATTR_SERVICE_NAME:
+      core.getInput('otel_service_name') || 'github-actions-hw-bom',
+    ATTR_SERVICE_VERSION: '1.0.0'
   }),
   logRecordProcessors: [
     new SimpleLogRecordProcessor(
