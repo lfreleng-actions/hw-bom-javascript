@@ -45,7 +45,7 @@ const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') ||
     'http://localhost:4317';
 const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') ||
     process.env.OTEL_EXPORTER_OTLP_HEADERS ||
-    '';
+    'key:value';
 const sdk = new sdk_node_1.NodeSDK({
     resource: (0, resources_1.resourceFromAttributes)({
         [semantic_conventions_1.ATTR_SERVICE_NAME]: 'hw-bom-github-action',

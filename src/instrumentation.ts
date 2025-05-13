@@ -19,7 +19,7 @@ const otelExporterOTLPEndpoint =
 const otelExporterOTLPHeaders =
   core.getInput('otel_exporter_otlp_headers') ||
   process.env.OTEL_EXPORTER_OTLP_HEADERS ||
-  ''
+  'key:value'
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: 'hw-bom-github-action',
