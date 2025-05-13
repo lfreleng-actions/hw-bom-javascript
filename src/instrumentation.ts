@@ -10,7 +10,7 @@ import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION
 } from '@opentelemetry/semantic-conventions'
-import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-http'
+import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-proto'
 
 const otelExporterOTLPEndpoint =
   core.getInput('otel_exporter_otlp_endpoint') ||
