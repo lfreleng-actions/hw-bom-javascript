@@ -1,8 +1,8 @@
 {
-  "name": "hw-bom",
+  "name": "hw-bom-javascript",
   "version": "1.0.0",
-  "description": "Upload an Actions Artifact in a workflow run",
-  "main": "dist/upload/index.js",
+  "description": "Create a Hardware Bill of Materials (BOM) from a GitHub Actions workflow run",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "check-all": "concurrently \"npm:format-check\" \"npm:lint\" \"npm:test\" \"npm:build\"",
@@ -18,8 +18,9 @@
   "keywords": [
     "Actions",
     "GitHub",
-    "Artifacts",
-    "Upload"
+    "BOM",
+    "Hardware",
+    "Bill of Materials"
   ],
   "author": "Jordan Conway",
   "license": "Apache-2.0",
@@ -30,7 +31,6 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.1",
-    "@opentelemetry/auto-instrumentations-node": "^0.58.0",
     "@opentelemetry/exporter-logs-otlp-http": "^0.201.1",
     "@opentelemetry/exporter-logs-otlp-proto": "^0.200.0",
     "@opentelemetry/instrumentation-bunyan": "^0.47.0",
@@ -38,9 +38,7 @@
     "@opentelemetry/sdk-logs": "^0.200.0",
     "@opentelemetry/sdk-node": "^0.200.0",
     "@opentelemetry/semantic-conventions": "^1.32.0",
-    "@opentelemetry/winston-transport": "^0.11.0",
-    "bunyan": "^1.8.15",
-    "winston": "^3.17.0"
+    "bunyan": "^1.8.15"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
