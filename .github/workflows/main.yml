@@ -54,7 +54,7 @@ jobs:
         id: hw-info
         uses: ./
         with:
-          otel_service_name: ${{ inputs.otel_service_name }}
+          otel_service_name: lfreleng-actions-hw-bom-javascript
           otel_exporter_otlp_headers: 'x-honeycomb-team=${{ secrets.HONEYCOMB_API_KEY }}'
           otel_exporter_otlp_endpoint: 'https://api.honeycomb.io'
 
