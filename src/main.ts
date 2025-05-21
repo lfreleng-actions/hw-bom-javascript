@@ -228,7 +228,7 @@ export async function run(): Promise<void> {
       }
     }
     logger.info(
-      {hwBom},
+      hwBom,
       'Hardware Bill of Materials for Workflow Run ' + workflowRun
     )
   } catch (error) {

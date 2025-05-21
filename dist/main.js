@@ -222,7 +222,7 @@ async function run() {
                 diskFree: diskFree
             }
         };
-        logger.info({ hwBom }, 'Hardware Bill of Materials for Workflow Run ' + workflowRun);
+        logger.info(hwBom, 'Hardware Bill of Materials for Workflow Run ' + workflowRun);
     }
     catch (error) {
         if (error instanceof Error)
