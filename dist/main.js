@@ -75,10 +75,10 @@ loggerProvider.addLogRecordProcessor(new sdk_logs_1.SimpleLogRecordProcessor(otl
 const logger = bunyan_1.default.createLogger({
     name: serviceName,
     streams: [
-    // {
-    //   level: 'info',
-    //  stream: process.stdout
-    // }
+        {
+            level: 'info',
+            stream: process.stdout
+        }
     ]
 });
 // Add a custom stream for OpenTelemetry

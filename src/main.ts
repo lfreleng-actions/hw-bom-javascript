@@ -46,10 +46,10 @@ loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(otlpExporter))
 const logger = bunyan.createLogger({
   name: serviceName,
   streams: [
-   // {
-   //   level: 'info',
-   //  stream: process.stdout
-   // }
+    {
+      level: 'info',
+      stream: process.stdout
+    }
   ]
 })
 
