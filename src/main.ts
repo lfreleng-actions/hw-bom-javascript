@@ -7,10 +7,48 @@
 import {execSync} from 'child_process'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {LoggerProvider, SimpleLogRecordProcessor, ConsoleLogRecordExporter} from '@opentelemetry/sdk-logs'
+import {
+  LoggerProvider,
+  SimpleLogRecordProcessor,
+  ConsoleLogRecordExporter
+} from '@opentelemetry/sdk-logs'
+import {resourceFromAttributes} from '@opentelemetry/resources'
+import {
+  ATTR_SERVICE_NAME,
+  ATTR_SERVICE_VERSION
+} from '@opentelemetry/semantic-conventions'
+import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-proto'
 
-const loggerProvider = new LoggerProvider()
-loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(new ConsoleLogRecordExporter()))
+const serviceName =
+  core.getInput('otel_service_name') || 'github-actions-hw-bom'
+const resource = resourceFromAttributes({
+  [ATTR_SERVICE_NAME]: serviceName,
+  [ATTR_SERVICE_VERSION]: '1.0.0'
+})
+
+const otelExporterOTLPEndpoint =
+  core.getInput('otel_exporter_otlp_endpoint') ||
+  process.env.OTEL_EXPORTER_OTLP_ENDPOINT ||
+  'http://localhost:4317'
+const otelExporterOTLPHeaders =
+  core.getInput('otel_exporter_otlp_headers') ||
+  process.env.OTEL_EXPORTER_OTLP_HEADERS ||
+  'key:value'
+
+const loggerProvider = new LoggerProvider({
+  resource: resource
+})
+loggerProvider.addLogRecordProcessor(
+  new SimpleLogRecordProcessor(
+    new OTLPLogExporter({
+      url: otelExporterOTLPEndpoint + '/v1/logs',
+      headers: {otelExporterOTLPHeaders}
+    })
+  )
+)
+loggerProvider.addLogRecordProcessor(
+  new SimpleLogRecordProcessor(new ConsoleLogRecordExporter())
+)
 const logger = loggerProvider.getLogger('hw-bom')
 
 export async function getAwsToken(): Promise<string> {
@@ -158,5 +196,3 @@ export async function run(): Promise<void> {
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
-
-run()
