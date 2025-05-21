@@ -46,7 +46,27 @@ const child_process_1 = require("child_process");
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));
 const sdk_logs_1 = require("@opentelemetry/sdk-logs");
-const loggerProvider = new sdk_logs_1.LoggerProvider();
+const resources_1 = require("@opentelemetry/resources");
+const semantic_conventions_1 = require("@opentelemetry/semantic-conventions");
+const exporter_logs_otlp_proto_1 = require("@opentelemetry/exporter-logs-otlp-proto");
+const serviceName = core.getInput('otel_service_name') || 'github-actions-hw-bom';
+const resource = (0, resources_1.resourceFromAttributes)({
+    [semantic_conventions_1.ATTR_SERVICE_NAME]: serviceName,
+    [semantic_conventions_1.ATTR_SERVICE_VERSION]: '1.0.0'
+});
+const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') ||
+    process.env.OTEL_EXPORTER_OTLP_ENDPOINT ||
+    'http://localhost:4317';
+const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') ||
+    process.env.OTEL_EXPORTER_OTLP_HEADERS ||
+    'key:value';
+const loggerProvider = new sdk_logs_1.LoggerProvider({
+    resource: resource
+});
+loggerProvider.addLogRecordProcessor(new sdk_logs_1.SimpleLogRecordProcessor(new exporter_logs_otlp_proto_1.OTLPLogExporter({
+    url: otelExporterOTLPEndpoint + '/v1/logs',
+    headers: { otelExporterOTLPHeaders }
+})));
 loggerProvider.addLogRecordProcessor(new sdk_logs_1.SimpleLogRecordProcessor(new sdk_logs_1.ConsoleLogRecordExporter()));
 const logger = loggerProvider.getLogger('hw-bom');
 async function getAwsToken() {
@@ -177,4 +197,3 @@ async function run() {
             core.setFailed(error.message);
     }
 }
-run();
