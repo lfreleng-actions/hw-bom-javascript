@@ -7,11 +7,11 @@
 import {execSync} from 'child_process'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import winston from 'winston'
-import {OpenTelemetryTransportV3} from '@opentelemetry/winston-transport'
-const logger = winston.createLogger({
-  transports: [new winston.transports.Console(), new OpenTelemetryTransportV3()]
-})
+import {LoggerProvider, SimpleLogRecordProcessor, ConsoleLogRecordExporter} from '@opentelemetry/sdk-logs'
+
+const loggerProvider = new LoggerProvider()
+loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(new ConsoleLogRecordExporter()))
+const logger = loggerProvider.getLogger('hw-bom')
 
 export async function getAwsToken(): Promise<string> {
   try {
@@ -149,10 +149,11 @@ export async function run(): Promise<void> {
         diskFree: diskFree
       }
     }
-    logger.info(
-      'Hardware Bill of Materials for Workflow Run ' + workflowRun,
-      hwBom
-    )
+    logger.emit({
+      severityText: 'INFO',
+      body: 'Hardware Bill of Materials for Workflow Run ' + workflowRun,
+      attributes: hwBom
+    })
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

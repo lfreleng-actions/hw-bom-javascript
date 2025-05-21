@@ -36,9 +36,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAwsToken = getAwsToken;
 exports.getInstanceType = getInstanceType;
@@ -48,11 +45,10 @@ exports.run = run;
 const child_process_1 = require("child_process");
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));
-const winston_1 = __importDefault(require("winston"));
-const winston_transport_1 = require("@opentelemetry/winston-transport");
-const logger = winston_1.default.createLogger({
-    transports: [new winston_1.default.transports.Console(), new winston_transport_1.OpenTelemetryTransportV3()]
-});
+const sdk_logs_1 = require("@opentelemetry/sdk-logs");
+const loggerProvider = new sdk_logs_1.LoggerProvider();
+loggerProvider.addLogRecordProcessor(new sdk_logs_1.SimpleLogRecordProcessor(new sdk_logs_1.ConsoleLogRecordExporter()));
+const logger = loggerProvider.getLogger('hw-bom');
 async function getAwsToken() {
     try {
         const response = await fetch('http://169.254.169.254/latest/api/token', {
@@ -170,7 +166,11 @@ async function run() {
                 diskFree: diskFree
             }
         };
-        logger.info('Hardware Bill of Materials for Workflow Run ' + workflowRun, hwBom);
+        logger.emit({
+            severityText: 'INFO',
+            body: 'Hardware Bill of Materials for Workflow Run ' + workflowRun,
+            attributes: hwBom
+        });
     }
     catch (error) {
         if (error instanceof Error)
