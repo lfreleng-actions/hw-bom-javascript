@@ -5,12 +5,12 @@ import {
 } from '@opentelemetry/sdk-logs'
 import {resourceFromAttributes} from '@opentelemetry/resources'
 import * as core from '@actions/core'
-import {getNodeAutoInstrumentations} from '@opentelemetry/auto-instrumentations-node'
+import {BunyanInstrumentation} from '@opentelemetry/instrumentation-bunyan'
 import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION
 } from '@opentelemetry/semantic-conventions'
-import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-proto'
+import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-http'
 
 const otelExporterOTLPEndpoint =
   core.getInput('otel_exporter_otlp_endpoint') ||
@@ -35,7 +35,7 @@ const sdk = new NodeSDK({
     ),
     new SimpleLogRecordProcessor(new ConsoleLogRecordExporter())
   ],
-  instrumentations: [getNodeAutoInstrumentations()]
+  instrumentations: [new BunyanInstrumentation()]
 })
 
 try {

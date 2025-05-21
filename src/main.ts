@@ -7,17 +7,15 @@
 import {execSync} from 'child_process'
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import {
-  LoggerProvider,
-  SimpleLogRecordProcessor,
-  ConsoleLogRecordExporter
-} from '@opentelemetry/sdk-logs'
 import {resourceFromAttributes} from '@opentelemetry/resources'
 import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION
 } from '@opentelemetry/semantic-conventions'
 import {OTLPLogExporter} from '@opentelemetry/exporter-logs-otlp-proto'
+import bunyan from 'bunyan'
+import {LoggerProvider, SimpleLogRecordProcessor} from '@opentelemetry/sdk-logs'
+import {ValueType} from '@opentelemetry/api'
 
 const serviceName =
   core.getInput('otel_service_name') || 'github-actions-hw-bom'
@@ -35,21 +33,63 @@ const otelExporterOTLPHeaders =
   process.env.OTEL_EXPORTER_OTLP_HEADERS ||
   'key:value'
 
+const otlpExporter = new OTLPLogExporter({
+  url: otelExporterOTLPEndpoint + '/v1/logs',
+  headers: {otelExporterOTLPHeaders}
+})
+
 const loggerProvider = new LoggerProvider({
   resource: resource
 })
-loggerProvider.addLogRecordProcessor(
-  new SimpleLogRecordProcessor(
-    new OTLPLogExporter({
-      url: otelExporterOTLPEndpoint + '/v1/logs',
-      headers: {otelExporterOTLPHeaders}
-    })
-  )
-)
-loggerProvider.addLogRecordProcessor(
-  new SimpleLogRecordProcessor(new ConsoleLogRecordExporter())
-)
-const logger = loggerProvider.getLogger('hw-bom')
+loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(otlpExporter))
+
+const logger = bunyan.createLogger({
+  name: serviceName,
+  streams: [
+    {
+      level: 'info',
+      stream: process.stdout
+    }
+  ]
+})
+
+// Add a custom stream for OpenTelemetry
+logger.addStream({
+  level: 'info',
+  type: 'raw',
+  stream: {
+    write: (obj: object) => {
+      const record = obj as {
+        level: number
+        msg: string
+        time: Date
+        v: number
+        name: string
+        pid: number
+        hostname: string
+        [key: string]: unknown
+      }
+
+      const attributes: Record<string, ValueType> = {}
+      // Convert Bunyan record to OpenTelemetry attributes
+      Object.entries(record).forEach(([key, value]) => {
+        if (
+          typeof value === 'string' ||
+          typeof value === 'number' ||
+          typeof value === 'boolean'
+        ) {
+          attributes[key] = value as ValueType
+        }
+      })
+
+      loggerProvider.getLogger('hw-bom').emit({
+        severityText: 'INFO',
+        body: record.msg,
+        attributes
+      })
+    }
+  }
+})
 
 export async function getAwsToken(): Promise<string> {
   try {
@@ -187,11 +227,10 @@ export async function run(): Promise<void> {
         diskFree: diskFree
       }
     }
-    logger.emit({
-      severityText: 'INFO',
-      body: 'Hardware Bill of Materials for Workflow Run ' + workflowRun,
-      attributes: hwBom
-    })
+    logger.info(
+      {hwBom},
+      'Hardware Bill of Materials for Workflow Run ' + workflowRun
+    )
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

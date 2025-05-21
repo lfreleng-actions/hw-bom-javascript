@@ -36,6 +36,9 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAwsToken = getAwsToken;
 exports.getInstanceType = getInstanceType;
@@ -45,10 +48,11 @@ exports.run = run;
 const child_process_1 = require("child_process");
 const core = __importStar(require("@actions/core"));
 const github = __importStar(require("@actions/github"));
-const sdk_logs_1 = require("@opentelemetry/sdk-logs");
 const resources_1 = require("@opentelemetry/resources");
 const semantic_conventions_1 = require("@opentelemetry/semantic-conventions");
 const exporter_logs_otlp_proto_1 = require("@opentelemetry/exporter-logs-otlp-proto");
+const bunyan_1 = __importDefault(require("bunyan"));
+const sdk_logs_1 = require("@opentelemetry/sdk-logs");
 const serviceName = core.getInput('otel_service_name') || 'github-actions-hw-bom';
 const resource = (0, resources_1.resourceFromAttributes)({
     [semantic_conventions_1.ATTR_SERVICE_NAME]: serviceName,
@@ -60,15 +64,47 @@ const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') ||
 const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') ||
     process.env.OTEL_EXPORTER_OTLP_HEADERS ||
     'key:value';
+const otlpExporter = new exporter_logs_otlp_proto_1.OTLPLogExporter({
+    url: otelExporterOTLPEndpoint + '/v1/logs',
+    headers: { otelExporterOTLPHeaders }
+});
 const loggerProvider = new sdk_logs_1.LoggerProvider({
     resource: resource
 });
-loggerProvider.addLogRecordProcessor(new sdk_logs_1.SimpleLogRecordProcessor(new exporter_logs_otlp_proto_1.OTLPLogExporter({
-    url: otelExporterOTLPEndpoint + '/v1/logs',
-    headers: { otelExporterOTLPHeaders }
-})));
-loggerProvider.addLogRecordProcessor(new sdk_logs_1.SimpleLogRecordProcessor(new sdk_logs_1.ConsoleLogRecordExporter()));
-const logger = loggerProvider.getLogger('hw-bom');
+loggerProvider.addLogRecordProcessor(new sdk_logs_1.SimpleLogRecordProcessor(otlpExporter));
+const logger = bunyan_1.default.createLogger({
+    name: serviceName,
+    streams: [
+        {
+            level: 'info',
+            stream: process.stdout
+        }
+    ]
+});
+// Add a custom stream for OpenTelemetry
+logger.addStream({
+    level: 'info',
+    type: 'raw',
+    stream: {
+        write: (obj) => {
+            const record = obj;
+            const attributes = {};
+            // Convert Bunyan record to OpenTelemetry attributes
+            Object.entries(record).forEach(([key, value]) => {
+                if (typeof value === 'string' ||
+                    typeof value === 'number' ||
+                    typeof value === 'boolean') {
+                    attributes[key] = value;
+                }
+            });
+            loggerProvider.getLogger('hw-bom').emit({
+                severityText: 'INFO',
+                body: record.msg,
+                attributes
+            });
+        }
+    }
+});
 async function getAwsToken() {
     try {
         const response = await fetch('http://169.254.169.254/latest/api/token', {
@@ -186,11 +222,7 @@ async function run() {
                 diskFree: diskFree
             }
         };
-        logger.emit({
-            severityText: 'INFO',
-            body: 'Hardware Bill of Materials for Workflow Run ' + workflowRun,
-            attributes: hwBom
-        });
+        logger.info({ hwBom }, 'Hardware Bill of Materials for Workflow Run ' + workflowRun);
     }
     catch (error) {
         if (error instanceof Error)

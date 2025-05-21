@@ -37,9 +37,9 @@ const sdk_node_1 = require("@opentelemetry/sdk-node");
 const sdk_logs_1 = require("@opentelemetry/sdk-logs");
 const resources_1 = require("@opentelemetry/resources");
 const core = __importStar(require("@actions/core"));
-const auto_instrumentations_node_1 = require("@opentelemetry/auto-instrumentations-node");
+const instrumentation_bunyan_1 = require("@opentelemetry/instrumentation-bunyan");
 const semantic_conventions_1 = require("@opentelemetry/semantic-conventions");
-const exporter_logs_otlp_proto_1 = require("@opentelemetry/exporter-logs-otlp-proto");
+const exporter_logs_otlp_http_1 = require("@opentelemetry/exporter-logs-otlp-http");
 const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') ||
     process.env.OTEL_EXPORTER_OTLP_ENDPOINT ||
     'http://localhost:4317';
@@ -52,13 +52,13 @@ const sdk = new sdk_node_1.NodeSDK({
         [semantic_conventions_1.ATTR_SERVICE_VERSION]: '1.0.0'
     }),
     logRecordProcessors: [
-        new sdk_logs_1.SimpleLogRecordProcessor(new exporter_logs_otlp_proto_1.OTLPLogExporter({
+        new sdk_logs_1.SimpleLogRecordProcessor(new exporter_logs_otlp_http_1.OTLPLogExporter({
             url: otelExporterOTLPEndpoint + '/v1/logs',
             headers: { otelExporterOTLPHeaders }
         })),
         new sdk_logs_1.SimpleLogRecordProcessor(new sdk_logs_1.ConsoleLogRecordExporter())
     ],
-    instrumentations: [(0, auto_instrumentations_node_1.getNodeAutoInstrumentations)()]
+    instrumentations: [new instrumentation_bunyan_1.BunyanInstrumentation()]
 });
 try {
     sdk.start();
