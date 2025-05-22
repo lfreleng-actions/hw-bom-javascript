@@ -26,6 +26,26 @@ instances and makes it available as workflow outputs. It's useful for:
 - Provides all information as workflow outputs
 - Handles errors with appropriate error messages
 
+## OpenTelemetry Integration
+
+This project integrates OpenTelemetry for observability. The instrumentation is set up in `src/instrumentation.ts` and uses the following components:
+
+- **NodeSDK**: Initializes the OpenTelemetry SDK with a resource, log record processors, and instrumentations.
+- **BunyanInstrumentation**: Automatically instruments Bunyan logs.
+- **OTLPLogExporter**: Exports logs to an OTLP-compatible endpoint.
+
+### Configuration
+
+You can configure the OpenTelemetry setup using the following inputs:
+
+- `otel_service_name`: The name of your service (default: 'hw-bom').
+- `otel_exporter_otlp_endpoint`: The OTLP endpoint URL (default: 'http://localhost:4317').
+- `otel_exporter_otlp_headers`: Headers for the OTLP exporter (default: 'key:value').
+
+These inputs can be provided via GitHub Actions inputs or environment variables.
+
+CAVEAT: There seems to be an issue setting the otlp endpoint and headers via GitHub Actions inputs (in the node code) and it seems to currently only work with them set as ENV vars. I suspect this may have to do with the OpenTelemetry SDK for node only being in "development" status for logging.
+
 ## Usage
 
 ```yaml
@@ -39,8 +59,15 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Collect Hardware Information
+        env:
+          OTEL_EXPORTER_OTLP_ENDPOINT: "http://your-otlp-endpoint:4317"
+          OTEL_EXPORTER_OTLP_HEADERS: "your-key=your-value"
         id: hw-info
         uses: lfreleng-actions/hw-bom-javascript@v1
+        with:
+          otel_service_name: 'your-service-name'
+          otel_exporter_otlp_endpoint: 'http://your-otlp-endpoint:4317'
+          otel_exporter_otlp_headers: 'your-key:your-value'
 
       - name: Display Hardware Information
         run: |
