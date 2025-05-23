@@ -28,9 +28,11 @@ instances and makes it available as workflow outputs. It's useful for:
 
 ## OpenTelemetry Integration
 
-This project integrates OpenTelemetry for observability. The instrumentation is set up in `src/instrumentation.ts` and uses the following components:
+This project integrates OpenTelemetry for observability. `src/instrumentation.ts`
+configures the instrumentation and uses the following components:
 
-- **NodeSDK**: Initializes the OpenTelemetry SDK with a resource, log record processors, and instrumentations.
+- **NodeSDK**: Initializes the OpenTelemetry SDK with a resource, log record
+   processors, and instrumentations.
 - **BunyanInstrumentation**: Automatically instruments Bunyan logs.
 - **OTLPLogExporter**: Exports logs to an OTLP-compatible endpoint.
 
@@ -42,9 +44,18 @@ You can configure the OpenTelemetry setup using the following inputs:
 - `otel_exporter_otlp_endpoint`: The OTLP endpoint URL (default: 'http://localhost:4317').
 - `otel_exporter_otlp_headers`: Headers for the OTLP exporter (default: 'key:value').
 
-These inputs can be provided via GitHub Actions inputs or environment variables.
+```yaml
+env:
+    OTEL_EXPORTER_OTLP_ENDPOINT: "http://localhost:3137"
+    OTEL_EXPORTER_OTLP_HEADERS:  "key=value"
+  ```
 
-CAVEAT: There seems to be an issue setting the otlp endpoint and headers via GitHub Actions inputs (in the node code) and it seems to currently only work with them set as ENV vars. I suspect this may have to do with the OpenTelemetry SDK for node only being in "development" status for logging.
+You may set these inputs via GitHub Actions inputs or environment variables.
+
+CAVEAT: There seems to be an issue setting the otlp endpoint and headers via GitHub
+ Actions inputs (in the node code) but at the time of writing they work as expected
+ when set as ENV vars. I suspect this may have to do with the OpenTelemetry SDK
+ for node being in "development" status for logging.
 
 ## Usage
 
