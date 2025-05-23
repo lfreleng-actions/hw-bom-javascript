@@ -39,7 +39,7 @@ This project integrates OpenTelemetry for observability. The instrumentation is 
 You can configure the OpenTelemetry setup using the following inputs:
 
 - `otel_service_name`: The name of your service (default: 'hw-bom').
-- `otel_exporter_otlp_endpoint`: The OTLP endpoint URL (default: 'http://localhost:4317').
+- `otel_exporter_otlp_endpoint`: The OTLP endpoint URL (default: '<http://localhost:4317>').
 - `otel_exporter_otlp_headers`: Headers for the OTLP exporter (default: 'key:value').
 
 These inputs can be provided via GitHub Actions inputs or environment variables.
