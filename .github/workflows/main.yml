@@ -21,9 +21,9 @@ on:
         required: false
 
   push:
-    branches: [main, add_otel]
+    branches: [main]
   pull_request:
-    branches: [main, add_otel]
+    branches: [main]
 
 jobs:
   test-job:
