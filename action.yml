@@ -4,6 +4,17 @@
 
 name: 'Hardware Bill of Materials'
 description: 'A GitHub Action to generate a hardware bill of materials'
+inputs:
+  otel_service_name:
+    description: 'The name of the service'
+    required: true
+    default: 'github-action-hw-bom'
+  otel_exporter_otlp_endpoint:
+    description: 'The endpoint to use for the OTLP exporter'
+    required: false
+  otel_exporter_otlp_headers:
+    description: 'The headers to use for the OTLP exporter'
+    required: false
 outputs:
   cloud: # id of the output
     description: 'The Cloud Provider'

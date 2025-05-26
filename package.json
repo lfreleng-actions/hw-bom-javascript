@@ -1,36 +1,44 @@
 {
-  "name": "hw-bom",
+  "name": "hw-bom-javascript",
   "version": "1.0.0",
-  "description": "Upload an Actions Artifact in a workflow run",
-  "main": "dist/upload/index.js",
+  "description": "Create a Hardware Bill of Materials (BOM) from a GitHub Actions workflow run",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "release": "ncc build src/index.ts --out dist && ncc build src/main.ts --out dist/",
     "check-all": "concurrently \"npm:format-check\" \"npm:lint\" \"npm:test\" \"npm:build\"",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint **/*.ts",
-    "test": "jest --testTimeout 10000 --passWithNoTests"
+    "test": "jest --testTimeout 10000"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jordanconway/hw-bom.git"
+    "url": "git+https://github.com/lfreleng-actions/hw-bom-javascript.git"
   },
   "keywords": [
     "Actions",
     "GitHub",
-    "Artifacts",
-    "Upload"
+    "BOM",
+    "Hardware",
+    "Bill of Materials"
   ],
   "author": "Jordan Conway",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/jordanconway/hw-bom/issues"
+    "url": "https://github.com/lfreleng-actions/hw-bom-javascript/issues"
   },
-  "homepage": "https://github.com/jordanconway/hw-bom#readme",
+  "homepage": "https://github.com/lfreleng-actions/hw-bom-javascript#readme",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.1"
+    "@actions/github": "^6.0.1",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.201.1",
+    "@opentelemetry/instrumentation-bunyan": "^0.47.0",
+    "@opentelemetry/resources": "^2.0.0",
+    "@opentelemetry/sdk-logs": "^0.200.0",
+    "@opentelemetry/sdk-node": "^0.200.0",
+    "@opentelemetry/semantic-conventions": "^1.32.0",
+    "@types/bunyan": "^1.8.11",
+    "bunyan": "^1.8.15"
   },
   "devDependencies": {
     "@actions/core": "^1.11.1",
@@ -81,9 +89,12 @@
       "^(\\.{1,2}/.*)\\.js$": "$1"
     },
     "transform": {
-      "^.+\\.tsx?$": ["ts-jest", {
-        "useESM": true
-      }]
+      "^.+\\.tsx?$": [
+        "ts-jest",
+        {
+          "useESM": true
+        }
+      ]
     }
   },
   "eslintConfig": {
