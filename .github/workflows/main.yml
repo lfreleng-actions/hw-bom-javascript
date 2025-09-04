@@ -56,7 +56,7 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS:
             "x-honeycomb-team=${{ secrets.HONEYCOMB_API_KEY }}"
         id: hw-info
-      #  uses: ./
+        uses: ./
         with:
           otel_service_name: lfreleng-actions-hw-bom-javascript
           otel_exporter_otlp_headers:
