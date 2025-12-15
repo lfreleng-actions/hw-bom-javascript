@@ -40,7 +40,7 @@ repos:
           - --branch=production
 
   - repo: https://github.com/eclipse-csi/octopin
-    rev: 88826108188acef07eefab3bd6f04d9acd4b2cc2  # frozen: v0.1.3
+    rev: 67eac129b3e1d8ddb47e657bb2fda28c33d948ca  # frozen: v0.1.4
     hooks:
       - id: pin-versions
 
@@ -56,7 +56,7 @@ repos:
         types: [yaml]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 488940d9de1b658fac229e34c521d75a6ea476f2  # frozen: v0.14.5
+    rev: d96cc7adddf7d15b77f99dbd5d20e037dfd1b29c  # frozen: v0.14.9
     hooks:
       - id: ruff
         files: ^(scripts|tests|custom_components)/.+\.py$
@@ -65,7 +65,7 @@ repos:
         files: ^(scripts|tests|custom_components)/.+\.py$
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 9f70dc58c23dfcca1b97af99eaeee3140a807c7e  # frozen: v1.18.2
+    rev: a66e98df7b4aeeb3724184b332785976d062b92e  # frozen: v1.19.1
     hooks:
       - id: mypy
 
@@ -81,7 +81,7 @@ repos:
       - id: shellcheck
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: 192ad822316c3a22fb3d3cc8aa6eafa0b8488360  # frozen: v0.45.0
+    rev: 76b3d32d3f4b965e1d6425253c59407420ae2c43  # frozen: v0.47.0
     hooks:
       - id: markdownlint
         args: ["--fix"]
@@ -94,7 +94,7 @@ repos:
   # Replaces: https://github.com/rhysd/actionlint
   # Permits actionlint to run both locally and with precommit.ci/GitHub
   - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
-    rev: 2773c7d04be5d0ceb075f215b6d0a4eacd4a432b  # frozen: v1.7.8.24
+    rev: 381d5e68de9fe958938da811f2e094a8f90e8195  # frozen: v1.7.9.24
     hooks:
       - id: actionlint
 

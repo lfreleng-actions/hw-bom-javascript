@@ -100,22 +100,22 @@ jobs:
 
 The action provides the following outputs:
 
-| Output Name | Description |
-|-------------|-------------|
-| `cloud` | Cloud provider name (aws, azure, gce, openstack) |
-| `workflowRun` | Github Action Workflow ID |
-| `instanceType` | Instance type/size |
-| `uname` | System information from uname -a |
-| `cpu` | CPU model name |
-| `cpuVendor` | CPU vendor |
-| `cpuNumProc` | Number of processors |
-| `hostname` | System hostname |
-| `gpuVendor` | GPU vendor |
-| `gpuModel` | GPU model |
-| `memTotal` | Total system memory |
-| `diskTotal` | Total disk space |
-| `diskUsed` | Used disk space |
-| `diskFree` | Free disk space |
+| Output Name    | Description                                      |
+| -------------- | ------------------------------------------------ |
+| `cloud`        | Cloud provider name (aws, azure, gce, openstack) |
+| `workflowRun`  | Github Action Workflow ID                        |
+| `instanceType` | Instance type/size                               |
+| `uname`        | System information from uname -a                 |
+| `cpu`          | CPU model name                                   |
+| `cpuVendor`    | CPU vendor                                       |
+| `cpuNumProc`   | Number of processors                             |
+| `hostname`     | System hostname                                  |
+| `gpuVendor`    | GPU vendor                                       |
+| `gpuModel`     | GPU model                                        |
+| `memTotal`     | Total system memory                              |
+| `diskTotal`    | Total disk space                                 |
+| `diskUsed`     | Used disk space                                  |
+| `diskFree`     | Free disk space                                  |
 
 ## Requirements
 
