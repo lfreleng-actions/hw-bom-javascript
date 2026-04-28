@@ -24,6 +24,10 @@
   ],
   "author": "Jordan Conway",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=24.0.0",
+    "npm": ">=11.10.0"
+  },
   "bugs": {
     "url": "https://github.com/lfreleng-actions/hw-bom-javascript/issues"
   },
