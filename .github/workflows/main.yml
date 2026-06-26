@@ -25,6 +25,11 @@ on:
   pull_request:
     branches: [main]
 
+# Least-privilege default for all jobs; both jobs only read the
+# repository contents (checkout). Individual jobs override as needed.
+permissions:
+  contents: read
+
 jobs:
   test-job:
     name: Test hw-bom GitHub Action TypeScript 🧪
