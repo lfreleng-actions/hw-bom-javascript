@@ -35,11 +35,11 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.1",
-    "@opentelemetry/exporter-logs-otlp-http": "^0.202.0",
+    "@opentelemetry/exporter-logs-otlp-http": "^0.219.0",
     "@opentelemetry/instrumentation-bunyan": "^0.48.0",
     "@opentelemetry/resources": "^2.0.0",
     "@opentelemetry/sdk-logs": "^0.202.0",
-    "@opentelemetry/sdk-node": "^0.202.0",
+    "@opentelemetry/sdk-node": "^0.219.0",
     "@opentelemetry/semantic-conventions": "^1.32.0",
     "@types/bunyan": "^1.8.11",
     "bunyan": "^1.8.15"
