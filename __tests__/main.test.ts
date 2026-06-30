@@ -3,26 +3,26 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {jest} from '@jest/globals'
-import {execSync} from 'child_process'
-import * as core from '@actions/core'
-import * as github from '@actions/github'
-import {
-  run,
-  getAwsToken,
-  getInstanceType,
-  runCommand,
-  processDisplay
-} from '../src/main'
+const mockExecSync = jest.fn()
+const mockGetInput = jest.fn(() => '')
+const mockSetOutput = jest.fn()
+const mockSetFailed = jest.fn()
+const mockGithubContext: {runId: number} = {runId: 0}
 
-// Mock the dependencies
-jest.mock('child_process')
+jest.unstable_mockModule('child_process', () => ({
+  execSync: mockExecSync
+}))
+jest.unstable_mockModule('@actions/core', () => ({
+  getInput: mockGetInput,
+  setOutput: mockSetOutput,
+  setFailed: mockSetFailed
+}))
+jest.unstable_mockModule('@actions/github', () => ({
+  context: mockGithubContext
+}))
 
-const setOutputSpy = jest
-  .spyOn(core, 'setOutput')
-  .mockImplementation(() => undefined)
-const setFailedSpy = jest
-  .spyOn(core, 'setFailed')
-  .mockImplementation(() => undefined)
+const {run, getAwsToken, getInstanceType, runCommand, processDisplay} =
+  await import('../src/main.js')
 
 // Mock fetch
 const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>
@@ -31,8 +31,8 @@ global.fetch = mockFetch
 describe('GitHub Action Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    setOutputSpy.mockClear()
-    setFailedSpy.mockClear()
+    mockGetInput.mockReturnValue('')
+    mockGithubContext.runId = 0
   })
 
   describe('getAwsToken', () => {
@@ -113,15 +113,15 @@ describe('GitHub Action Tests', () => {
   describe('runCommand', () => {
     it('should execute command and return output', () => {
       const mockOutput = 'test output'
-      ;(execSync as jest.Mock).mockReturnValue(Buffer.from(mockOutput))
+      mockExecSync.mockReturnValue(Buffer.from(mockOutput))
 
       const result = runCommand('test command')
       expect(result).toBe(mockOutput)
-      expect(execSync).toHaveBeenCalledWith('test command')
+      expect(mockExecSync).toHaveBeenCalledWith('test command')
     })
 
     it('should return error message on command failure', () => {
-      ;(execSync as jest.Mock).mockImplementation(() => {
+      mockExecSync.mockImplementation(() => {
         throw new Error('Command failed')
       })
 
@@ -176,14 +176,13 @@ describe('GitHub Action Tests', () => {
         "df -h --total | awk 'END{print $3}'": '50G',
         "df -h --total | awk 'END{print $4}'": '50G'
       }
-      const mockExecSync = execSync as jest.Mock
       mockExecSync.mockImplementation((command: unknown) => {
         return Buffer.from(commandOutputs[command as string] || '')
       })
 
       // Mock Github context
-      github.context.runId = 1234567890
-      expect(github.context.runId).toBe(1234567890)
+      mockGithubContext.runId = 1234567890
+      expect(mockGithubContext.runId).toBe(1234567890)
 
       // Mock AWS token and instance type responses
       mockFetch
@@ -197,36 +196,36 @@ describe('GitHub Action Tests', () => {
       await run()
 
       // Verify all outputs were set
-      expect(core.setOutput).toHaveBeenCalledWith('cloud', 'aws')
-      expect(core.setOutput).toHaveBeenCalledWith('instanceType', 't2.micro')
-      expect(core.setOutput).toHaveBeenCalledWith(
+      expect(mockSetOutput).toHaveBeenCalledWith('cloud', 'aws')
+      expect(mockSetOutput).toHaveBeenCalledWith('instanceType', 't2.micro')
+      expect(mockSetOutput).toHaveBeenCalledWith(
         'uname',
         'Linux test-host 5.4.0-1045-aws #47-Ubuntu SMP'
       )
-      expect(core.setOutput).toHaveBeenCalledWith('cpu', 'Intel(R) Xeon(R) CPU')
-      expect(core.setOutput).toHaveBeenCalledWith('cpuVendor', 'Intel')
-      expect(core.setOutput).toHaveBeenCalledWith('cpuNumProc', '2')
-      expect(core.setOutput).toHaveBeenCalledWith('hostname', 'test-host')
-      expect(core.setOutput).toHaveBeenCalledWith(
+      expect(mockSetOutput).toHaveBeenCalledWith('cpu', 'Intel(R) Xeon(R) CPU')
+      expect(mockSetOutput).toHaveBeenCalledWith('cpuVendor', 'Intel')
+      expect(mockSetOutput).toHaveBeenCalledWith('cpuNumProc', '2')
+      expect(mockSetOutput).toHaveBeenCalledWith('hostname', 'test-host')
+      expect(mockSetOutput).toHaveBeenCalledWith(
         'gpuVendor',
         'NVIDIA Corporation'
       )
-      expect(core.setOutput).toHaveBeenCalledWith('gpuModel', 'Tesla T4')
-      expect(core.setOutput).toHaveBeenCalledWith('gpuModel', 'Tesla T4')
-      expect(core.setOutput).toHaveBeenCalledWith('memTotal', '8192 MB')
-      expect(core.setOutput).toHaveBeenCalledWith('diskTotal', '100G')
-      expect(core.setOutput).toHaveBeenCalledWith('diskUsed', '50G')
-      expect(core.setOutput).toHaveBeenCalledWith('diskFree', '50G')
-      expect(core.setOutput).toHaveBeenCalledWith('workflowRun', '1234567890')
+      expect(mockSetOutput).toHaveBeenCalledWith('gpuModel', 'Tesla T4')
+      expect(mockSetOutput).toHaveBeenCalledWith('gpuModel', 'Tesla T4')
+      expect(mockSetOutput).toHaveBeenCalledWith('memTotal', '8192 MB')
+      expect(mockSetOutput).toHaveBeenCalledWith('diskTotal', '100G')
+      expect(mockSetOutput).toHaveBeenCalledWith('diskUsed', '50G')
+      expect(mockSetOutput).toHaveBeenCalledWith('diskFree', '50G')
+      expect(mockSetOutput).toHaveBeenCalledWith('workflowRun', '1234567890')
     })
     it('should handle errors and set failed status', async () => {
-      ;(core.setOutput as jest.Mock).mockImplementation(() => {
+      mockSetOutput.mockImplementation(() => {
         throw new Error('Command failed')
       })
 
       await run()
 
-      expect(core.setFailed).toHaveBeenCalledWith(
+      expect(mockSetFailed).toHaveBeenCalledWith(
         expect.stringContaining('Command failed')
       )
     })
