@@ -40,7 +40,7 @@
     "@opentelemetry/resources": "^2.8.0",
     "@opentelemetry/sdk-logs": "^0.219.0",
     "@opentelemetry/sdk-node": "^0.219.0",
-    "@opentelemetry/semantic-conventions": "^1.32.0",
+    "@opentelemetry/semantic-conventions": "^1.41.1",
     "@types/bunyan": "^1.8.11",
     "bunyan": "^1.8.15"
   },
