@@ -10,7 +10,7 @@
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint **/*.ts",
-    "test": "jest --testTimeout 10000"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --testTimeout 10000"
   },
   "repository": {
     "type": "git",
@@ -66,8 +66,11 @@
     "typescript": "^6.0.3"
   },
   "jest": {
-    "preset": "ts-jest",
+    "preset": "ts-jest/presets/default-esm",
     "testEnvironment": "node",
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
     "testPathIgnorePatterns": [
       "<rootDir>/dist/"
     ],
