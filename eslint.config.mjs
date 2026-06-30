@@ -50,6 +50,7 @@ export default defineConfig([{
     },
 
     rules: {
+        "import/no-unresolved": ["error", {"ignore": ["\\.js$"]}],
         "@typescript-eslint/no-empty-function": "off",
     },
 }]);

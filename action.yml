@@ -65,7 +65,7 @@ outputs:
     description: 'The Used Disk of the machine'
     value: ${{ steps.get-hw-bom.outputs.diskUsed }}
 runs:
-  using: 'node20'
+  using: 'node24'
   main: 'dist/index.js'
 branding:
   icon: 'cpu'
