@@ -16,7 +16,13 @@ import {
 
 // Mock the dependencies
 jest.mock('child_process')
-jest.mock('@actions/core')
+
+const setOutputSpy = jest
+  .spyOn(core, 'setOutput')
+  .mockImplementation(() => undefined)
+const setFailedSpy = jest
+  .spyOn(core, 'setFailed')
+  .mockImplementation(() => undefined)
 
 // Mock fetch
 const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>
@@ -25,6 +31,8 @@ global.fetch = mockFetch
 describe('GitHub Action Tests', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    setOutputSpy.mockClear()
+    setFailedSpy.mockClear()
   })
 
   describe('getAwsToken', () => {
