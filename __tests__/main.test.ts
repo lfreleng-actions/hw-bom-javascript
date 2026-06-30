@@ -30,7 +30,7 @@ global.fetch = mockFetch
 
 describe('GitHub Action Tests', () => {
   beforeEach(() => {
-    jest.clearAllMocks()
+    jest.resetAllMocks()
     mockGetInput.mockReturnValue('')
     mockGithubContext.runId = 0
   })
