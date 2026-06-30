@@ -1,62 +1,19 @@
 #!/usr/bin/env ts-node
-"use strict";
 // SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
 //
 // SPDX-License-Identifier: Apache-2.0
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAwsToken = getAwsToken;
-exports.getInstanceType = getInstanceType;
-exports.runCommand = runCommand;
-exports.processDisplay = processDisplay;
-exports.run = run;
-const child_process_1 = require("child_process");
-const core = __importStar(require("@actions/core"));
-const github = __importStar(require("@actions/github"));
-const resources_1 = require("@opentelemetry/resources");
-const semantic_conventions_1 = require("@opentelemetry/semantic-conventions");
-const exporter_logs_otlp_http_1 = require("@opentelemetry/exporter-logs-otlp-http");
-const bunyan_1 = __importDefault(require("bunyan"));
-const sdk_logs_1 = require("@opentelemetry/sdk-logs");
+import { execSync } from 'child_process';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
+import bunyan from 'bunyan';
+import { LoggerProvider, SimpleLogRecordProcessor } from '@opentelemetry/sdk-logs';
 const serviceName = core.getInput('otel_service_name') || 'github-actions-hw-bom';
-const resource = (0, resources_1.resourceFromAttributes)({
-    [semantic_conventions_1.ATTR_SERVICE_NAME]: serviceName,
-    [semantic_conventions_1.ATTR_SERVICE_VERSION]: '1.0.0'
+const resource = resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: serviceName,
+    [ATTR_SERVICE_VERSION]: '1.0.0'
 });
 const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') ||
     process.env.OTEL_EXPORTER_OTLP_ENDPOINT ||
@@ -64,15 +21,15 @@ const otelExporterOTLPEndpoint = core.getInput('otel_exporter_otlp_endpoint') ||
 const otelExporterOTLPHeaders = core.getInput('otel_exporter_otlp_headers') ||
     process.env.OTEL_EXPORTER_OTLP_HEADERS ||
     'key:value';
-const otlpExporter = new exporter_logs_otlp_http_1.OTLPLogExporter({
+const otlpExporter = new OTLPLogExporter({
     url: otelExporterOTLPEndpoint + '/v1/logs',
     headers: { otelExporterOTLPHeaders }
 });
-const loggerProvider = new sdk_logs_1.LoggerProvider({
-    resource: resource
+const loggerProvider = new LoggerProvider({
+    resource: resource,
+    processors: [new SimpleLogRecordProcessor(otlpExporter)]
 });
-loggerProvider.addLogRecordProcessor(new sdk_logs_1.SimpleLogRecordProcessor(otlpExporter));
-const logger = bunyan_1.default.createLogger({
+const logger = bunyan.createLogger({
     name: serviceName,
     streams: [
         {
@@ -105,7 +62,7 @@ logger.addStream({
         }
     }
 });
-async function getAwsToken() {
+export async function getAwsToken() {
     try {
         const response = await fetch('http://169.254.169.254/latest/api/token', {
             method: 'PUT',
@@ -118,7 +75,7 @@ async function getAwsToken() {
         return '';
     }
 }
-async function getInstanceType(cloud, awsToken = '') {
+export async function getInstanceType(cloud, awsToken = '') {
     try {
         switch (cloud) {
             case 'aws': {
@@ -148,16 +105,16 @@ async function getInstanceType(cloud, awsToken = '') {
         return 'Error fetching instance type';
     }
 }
-function runCommand(command) {
+export function runCommand(command) {
     try {
-        return (0, child_process_1.execSync)(command).toString().trim();
+        return execSync(command).toString().trim();
     }
     catch (error) {
         console.error(`Command failed: ${command}`, error);
         return 'Error executing command';
     }
 }
-function processDisplay(display, section) {
+export function processDisplay(display, section) {
     try {
         const result = display
             .split('\n') // split by newline
@@ -172,7 +129,7 @@ function processDisplay(display, section) {
         return '';
     }
 }
-async function run() {
+export async function run() {
     try {
         const display = runCommand('sudo lshw -C display');
         const cloud = runCommand('cloud-init query cloud-name');

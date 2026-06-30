@@ -39,9 +39,9 @@ const otlpExporter = new OTLPLogExporter({
 })
 
 const loggerProvider = new LoggerProvider({
-  resource: resource
+  resource: resource,
+  processors: [new SimpleLogRecordProcessor(otlpExporter)]
 })
-loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(otlpExporter))
 
 const logger = bunyan.createLogger({
   name: serviceName,

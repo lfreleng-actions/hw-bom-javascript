@@ -2,6 +2,7 @@
   "name": "hw-bom-javascript",
   "version": "1.0.0",
   "description": "Create a Hardware Bill of Materials (BOM) from a GitHub Actions workflow run",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
