@@ -55,7 +55,7 @@
     "@vercel/ncc": "^0.44.0",
     "concurrently": "^10.0.1",
     "eslint": "^9.28.0",
-    "eslint-config-prettier": "^10.1.5",
+    "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-jest": "^28.14.0",
     "eslint-plugin-prettier": "^5.5.6",
