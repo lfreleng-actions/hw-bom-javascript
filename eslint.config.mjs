@@ -26,9 +26,9 @@ export default defineConfig([{
         "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
-        "plugin:import/errors",
-        "plugin:import/warnings",
-        "plugin:import/typescript",
+        "plugin:import-x/errors",
+        "plugin:import-x/warnings",
+        "plugin:import-x/typescript",
         "plugin:prettier/recommended",
         "prettier",
     )),
@@ -50,7 +50,7 @@ export default defineConfig([{
     },
 
     rules: {
-        "import/no-unresolved": ["error", {"ignore": ["\\.js$"]}],
+        "import-x/no-unresolved": ["error", {"ignore": ["\\.js$"]}],
         "@typescript-eslint/no-empty-function": "off",
     },
 }]);
