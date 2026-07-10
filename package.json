@@ -45,6 +45,9 @@
     "@types/bunyan": "^1.8.11",
     "bunyan": "^1.8.15"
   },
+  "overrides": {
+    "picomatch": "4.0.5"
+  },
   "devDependencies": {
     "@actions/core": "^3.0.1",
     "@actions/github": "^9.1.1",
