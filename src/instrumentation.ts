@@ -31,13 +31,13 @@ const sdk = new NodeSDK({
     [ATTR_SERVICE_VERSION]: '1.0.0'
   }),
   logRecordProcessors: [
-    new SimpleLogRecordProcessor(
-      new OTLPLogExporter({
+    new SimpleLogRecordProcessor({
+      exporter: new OTLPLogExporter({
         url: otelExporterOTLPEndpoint + '/v1/logs',
         headers: {otelExporterOTLPHeaders}
       })
-    ),
-    new SimpleLogRecordProcessor(new ConsoleLogRecordExporter())
+    }),
+    new SimpleLogRecordProcessor({exporter: new ConsoleLogRecordExporter()})
   ],
   instrumentations: [new BunyanInstrumentation()]
 })
