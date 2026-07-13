@@ -17,6 +17,13 @@ import bunyan from 'bunyan'
 import {LoggerProvider, SimpleLogRecordProcessor} from '@opentelemetry/sdk-logs'
 import {ValueType} from '@opentelemetry/api'
 
+// Cloud Instance Metadata Service (IMDS) endpoints. These are fixed,
+// provider-defined addresses rather than environment-specific configuration:
+// 169.254.169.254 is the link-local IMDS address used by AWS, Azure and
+// OpenStack; metadata.google.internal is the GCP metadata server.
+const IMDS_LINK_LOCAL = 'http://169.254.169.254'
+const GCP_METADATA_SERVER = 'http://metadata.google.internal'
+
 const serviceName =
   core.getInput('otel_service_name') || 'github-actions-hw-bom'
 const resource = resourceFromAttributes({
@@ -93,7 +100,7 @@ logger.addStream({
 
 export async function getAwsToken(): Promise<string> {
   try {
-    const response = await fetch('http://169.254.169.254/latest/api/token', {
+    const response = await fetch(`${IMDS_LINK_LOCAL}/latest/api/token`, {
       method: 'PUT',
       headers: {'X-aws-ec2-metadata-token-ttl-seconds': '21600'}
     })
@@ -112,14 +119,14 @@ export async function getInstanceType(
     switch (cloud) {
       case 'aws': {
         const awsResponse = await fetch(
-          'http://169.254.169.254/latest/meta-data/instance-type',
+          `${IMDS_LINK_LOCAL}/latest/meta-data/instance-type`,
           {headers: {'X-aws-ec2-metadata-token': awsToken}}
         )
         return await awsResponse.text()
       }
       case 'azure': {
         const azureResponse = await fetch(
-          'http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2021-02-01&format=text',
+          `${IMDS_LINK_LOCAL}/metadata/instance/compute/vmSize?api-version=2021-02-01&format=text`,
           {headers: {Metadata: 'true'}}
         )
         const azureData = await azureResponse.text()
@@ -127,7 +134,7 @@ export async function getInstanceType(
       }
       case 'gce': {
         const gceResponse = await fetch(
-          'http://metadata.google.internal/computeMetadata/v1/instance/machine-type',
+          `${GCP_METADATA_SERVER}/computeMetadata/v1/instance/machine-type`,
           {headers: {'Metadata-Flavor': 'Google'}}
         )
         const gceData = (await gceResponse.text()).split('/').pop() || ''
@@ -135,7 +142,7 @@ export async function getInstanceType(
       }
       case 'openstack': {
         const openstackResponse = await fetch(
-          'http://169.254.169.254/2009-04-04/meta-data/instance-type'
+          `${IMDS_LINK_LOCAL}/2009-04-04/meta-data/instance-type`
         )
         return await openstackResponse.text()
       }
