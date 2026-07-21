@@ -46,7 +46,8 @@
     "bunyan": "^1.8.15"
   },
   "overrides": {
-    "picomatch": "4.0.5"
+    "picomatch": "4.0.5",
+    "shell-quote": "1.10.0"
   },
   "devDependencies": {
     "@actions/core": "^3.0.1",
