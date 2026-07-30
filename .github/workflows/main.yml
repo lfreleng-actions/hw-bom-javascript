@@ -1,8 +1,10 @@
+---
 # SPDX-FileCopyrightText: 2025 2025 The Linux Foundation
 #
 # SPDX-License-Identifier: Apache-2.0
 
 name: Test hw-bom GitHub Action 🧪
+# yamllint disable-line rule:truthy
 on:
   workflow_call:
     inputs:
@@ -106,15 +108,28 @@ jobs:
 
       - name: Display Hardware Information 🖥️
         run: |
-          echo "Cloud Provider: ${{ steps.hw-info.outputs.cloud }}"
-          echo "Instance Type: ${{ steps.hw-info.outputs.instanceType }}"
-          echo "Workflow RunID: ${{ steps.hw-info.outputs.workflowRun }}"
-          echo "CPU: ${{ steps.hw-info.outputs.cpu }}"
-          echo "CPU Vendor: ${{ steps.hw-info.outputs.cpuVendor }}"
-          echo "CPU Cores: ${{ steps.hw-info.outputs.cpuNumProc }}"
-          echo "GPU Vendor: ${{ steps.hw-info.outputs.gpuVendor }}"
-          echo "GPU Model: ${{ steps.hw-info.outputs.gpuModel }}"
-          echo "Memory: ${{ steps.hw-info.outputs.memTotal }}"
-          echo "Disk Total: ${{ steps.hw-info.outputs.diskTotal }}"
-          echo "Disk Used: ${{ steps.hw-info.outputs.diskUsed }}"
-          echo "Disk Free: ${{ steps.hw-info.outputs.diskFree }}"
+          echo "Cloud Provider: ${STEPS_HW_INFO_OUTPUTS_CLOUD}"
+          echo "Instance Type: ${STEPS_HW_INFO_OUTPUTS_INSTANCETYPE}"
+          echo "Workflow RunID: ${STEPS_HW_INFO_OUTPUTS_WORKFLOWRUN}"
+          echo "CPU: ${STEPS_HW_INFO_OUTPUTS_CPU}"
+          echo "CPU Vendor: ${STEPS_HW_INFO_OUTPUTS_CPUVENDOR}"
+          echo "CPU Cores: ${STEPS_HW_INFO_OUTPUTS_CPUNUMPROC}"
+          echo "GPU Vendor: ${STEPS_HW_INFO_OUTPUTS_GPUVENDOR}"
+          echo "GPU Model: ${STEPS_HW_INFO_OUTPUTS_GPUMODEL}"
+          echo "Memory: ${STEPS_HW_INFO_OUTPUTS_MEMTOTAL}"
+          echo "Disk Total: ${STEPS_HW_INFO_OUTPUTS_DISKTOTAL}"
+          echo "Disk Used: ${STEPS_HW_INFO_OUTPUTS_DISKUSED}"
+          echo "Disk Free: ${STEPS_HW_INFO_OUTPUTS_DISKFREE}"
+        env:
+          STEPS_HW_INFO_OUTPUTS_CLOUD: ${{ steps.hw-info.outputs.cloud }}
+          STEPS_HW_INFO_OUTPUTS_INSTANCETYPE: ${{ steps.hw-info.outputs.instanceType }}
+          STEPS_HW_INFO_OUTPUTS_WORKFLOWRUN: ${{ steps.hw-info.outputs.workflowRun }}
+          STEPS_HW_INFO_OUTPUTS_CPU: ${{ steps.hw-info.outputs.cpu }}
+          STEPS_HW_INFO_OUTPUTS_CPUVENDOR: ${{ steps.hw-info.outputs.cpuVendor }}
+          STEPS_HW_INFO_OUTPUTS_CPUNUMPROC: ${{ steps.hw-info.outputs.cpuNumProc }}
+          STEPS_HW_INFO_OUTPUTS_GPUVENDOR: ${{ steps.hw-info.outputs.gpuVendor }}
+          STEPS_HW_INFO_OUTPUTS_GPUMODEL: ${{ steps.hw-info.outputs.gpuModel }}
+          STEPS_HW_INFO_OUTPUTS_MEMTOTAL: ${{ steps.hw-info.outputs.memTotal }}
+          STEPS_HW_INFO_OUTPUTS_DISKTOTAL: ${{ steps.hw-info.outputs.diskTotal }}
+          STEPS_HW_INFO_OUTPUTS_DISKUSED: ${{ steps.hw-info.outputs.diskUsed }}
+          STEPS_HW_INFO_OUTPUTS_DISKFREE: ${{ steps.hw-info.outputs.diskFree }}
