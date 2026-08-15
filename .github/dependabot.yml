@@ -29,3 +29,11 @@ updates:
       semver-major-days: 30
       semver-minor-days: 7
       semver-patch-days: 3
+    ignore:
+      # Hold TypeScript on the 6.x line. The 7.x native port is not yet
+      # supported by the toolchain: ts-jest peers on "<7" and
+      # @typescript-eslint peers on "<6.1.0". Bumping to 7.x breaks
+      # "npm ci" and stops the Jest suite running entirely.
+      # Remove this once both projects support TypeScript 7.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
