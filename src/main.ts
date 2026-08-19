@@ -22,6 +22,7 @@ import {ValueType} from '@opentelemetry/api'
 // 169.254.169.254 is the link-local IMDS address used by AWS, Azure and
 // OpenStack; metadata.google.internal is the GCP metadata server.
 const IMDS_LINK_LOCAL = 'http://169.254.169.254'
+// aislop-ignore-next-line ai-slop/hardcoded-url -- fixed GCP-defined IMDS hostname, not deployment config
 const GCP_METADATA_SERVER = 'http://metadata.google.internal'
 
 const serviceName =
