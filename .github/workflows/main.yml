@@ -40,6 +40,7 @@ jobs:
   test-job:
     name: Test hw-bom GitHub Action TypeScript 🧪
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
@@ -70,6 +71,7 @@ jobs:
   dogfood:
     name: Run hw-bom GitHub Action on this repository 🐶🍖
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
@@ -99,7 +101,10 @@ jobs:
           OTEL_EXPORTER_OTLP_HEADERS:
             "x-honeycomb-team=${{ secrets.HONEYCOMB_API_KEY }}"
         id: hw-info
-        uses: ./
+        # Workspace-relative until dist/ is bundled: the action imports
+        # packages that npm ci installs only in the workspace, so the
+        # runner's own copy of it cannot load them. See #333.
+        uses: ./  # zizmor: ignore[self-repository]
         with:
           otel_service_name: lfreleng-actions-hw-bom-javascript
           otel_exporter_otlp_headers:
