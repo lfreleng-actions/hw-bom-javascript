@@ -156,12 +156,14 @@ export async function getInstanceType(
   }
 }
 
+export const COMMAND_FAILED = 'Error executing command'
+
 export function runCommand(command: string): string {
   try {
     return execSync(command).toString().trim()
   } catch (error) {
     console.error(`Command failed: ${command}`, error)
-    return 'Error executing command'
+    return COMMAND_FAILED
   }
 }
 
@@ -180,6 +182,24 @@ export function processDisplay(display: string, section: string): string {
   }
 }
 
+/**
+ * Extract the CPU model name from `lscpu` output.
+ *
+ * Handles both the flat layout lscpu prints when its output is piped and
+ * the indented one util-linux 2.37+ prints on a terminal, where
+ * `Model name:` sits under `Vendor ID:`. `BIOS Model name:` and `Model:`
+ * lines are not matched. A heterogeneous CPU reports one model name per
+ * core type; each distinct name is returned on its own line, in the order
+ * lscpu lists them.
+ */
+export function parseLscpuModelName(lscpu: string): string {
+  const names = lscpu
+    .split('\n')
+    .map(line => line.trim().match(/^Model name:\s*(.*)$/)?.[1])
+    .filter((name): name is string => Boolean(name))
+  return [...new Set(names)].join('\n')
+}
+
 export async function run(): Promise<void> {
   try {
     const display = runCommand('sudo lshw -C display')
@@ -192,6 +212,12 @@ export async function run(): Promise<void> {
       'cat /proc/cpuinfo |grep "model name"|sort -u|cut -d ":" -f2|awk \'{$1=$1};1\''
     )
     const cpuVendor = runCommand("lscpu | grep Vendor | awk '{print $NF}'")
+    // Unlike /proc/cpuinfo, which has no 'model name' field on arm64,
+    // lscpu reports a model name on both x86_64 and arm64 runners. The C
+    // locale keeps its field labels in the English the parser expects.
+    const lscpu = runCommand('LC_ALL=C lscpu')
+    const cpuModel =
+      lscpu === COMMAND_FAILED ? lscpu : parseLscpuModelName(lscpu)
     const cpuNumProc = runCommand('getconf _NPROCESSORS_ONLN')
     const hostname = runCommand('hostname')
     const memTotal = runCommand(
@@ -209,6 +235,7 @@ export async function run(): Promise<void> {
     core.setOutput('display', display)
     core.setOutput('cpu', cpu)
     core.setOutput('cpuVendor', cpuVendor)
+    core.setOutput('cpuModel', cpuModel)
     core.setOutput('cpuNumProc', cpuNumProc)
     core.setOutput('hostname', hostname)
     core.setOutput('gpuVendor', gpuVendor)
@@ -225,6 +252,7 @@ export async function run(): Promise<void> {
         uname: uname,
         cpu: cpu,
         cpuVendor: cpuVendor,
+        cpuModel: cpuModel,
         cpuNumProc: cpuNumProc,
         hostname: hostname,
         gpuVendor: gpuVendor,

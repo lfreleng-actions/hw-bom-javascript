@@ -28,11 +28,11 @@ outputs:
   display: # id of the output
     description: 'The Display of the machine'
   cpu: # id of the output
-    description: 'The CPU of the machine'
+    description: 'The CPU model name from /proc/cpuinfo (empty on arm64)'
   cpuVendor: # id of the output
     description: 'The CPU Vendor of the machine'
   cpuModel: # id of the output
-    description: 'The CPU Model of the machine'
+    description: 'The CPU model name reported by lscpu'
   cpuNumProc: # id of the output
     description: 'The CPU Cores of the machine'
   hostname: # id of the output
