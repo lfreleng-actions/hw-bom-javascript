@@ -21,8 +21,16 @@ jest.unstable_mockModule('@actions/github', () => ({
   context: mockGithubContext
 }))
 
-const {run, getAwsToken, getInstanceType, runCommand, processDisplay} =
-  await import('../src/main.js')
+const {
+  run,
+  getAwsToken,
+  getInstanceType,
+  runCommand,
+  processDisplay,
+  parseLscpuModelName
+} = await import('../src/main.js')
+const {lscpuX86, lscpuArm64, lscpuArm64Hierarchical} =
+  await import('../__fixtures__/lscpu.js')
 
 // Mock fetch
 const mockFetch = jest.fn() as jest.MockedFunction<typeof fetch>
@@ -159,6 +167,34 @@ describe('GitHub Action Tests', () => {
     })
   })
 
+  describe('parseLscpuModelName', () => {
+    it('should take Model name and skip BIOS Model name on x86_64', () => {
+      expect(parseLscpuModelName(lscpuX86)).toBe(
+        'AMD EPYC 7763 64-Core Processor'
+      )
+    })
+
+    it('should extract the model name on arm64', () => {
+      expect(parseLscpuModelName(lscpuArm64)).toBe('Neoverse-N2')
+    })
+
+    it('should list each core type of an indented heterogeneous CPU', () => {
+      expect(parseLscpuModelName(lscpuArm64Hierarchical)).toBe(
+        'Cortex-A55\nCortex-A78'
+      )
+    })
+
+    it('should report each distinct model name once', () => {
+      expect(
+        parseLscpuModelName('Model name: Neoverse-N2\nModel name: Neoverse-N2')
+      ).toBe('Neoverse-N2')
+    })
+
+    it('should return empty string when no model name is present', () => {
+      expect(parseLscpuModelName('Architecture: x86_64\nModel: 1')).toBe('')
+    })
+  })
+
   describe('run', () => {
     it('should collect and set all outputs successfully', async () => {
       // Mock all the command outputs
@@ -168,8 +204,7 @@ describe('GitHub Action Tests', () => {
         'cat /proc/cpuinfo |grep "model name"|sort -u|cut -d ":" -f2|awk \'{$1=$1};1\'':
           'Intel(R) Xeon(R) CPU',
         "lscpu | grep Vendor | awk '{print $NF}'": 'Intel',
-        'lscpu | grep "^Model name:" | cut -d ":" -f2- | awk \'{$1=$1};1\' | sort -u':
-          'Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz',
+        'LC_ALL=C lscpu': lscpuX86,
         'getconf _NPROCESSORS_ONLN': '2',
         hostname: 'test-host',
         'sudo lshw -C display': 'vendor: NVIDIA Corporation\nproduct: Tesla T4',
@@ -208,7 +243,7 @@ describe('GitHub Action Tests', () => {
       expect(mockSetOutput).toHaveBeenCalledWith('cpuVendor', 'Intel')
       expect(mockSetOutput).toHaveBeenCalledWith(
         'cpuModel',
-        'Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz'
+        'AMD EPYC 7763 64-Core Processor'
       )
       expect(mockSetOutput).toHaveBeenCalledWith('cpuNumProc', '2')
       expect(mockSetOutput).toHaveBeenCalledWith('hostname', 'test-host')
@@ -223,6 +258,18 @@ describe('GitHub Action Tests', () => {
       expect(mockSetOutput).toHaveBeenCalledWith('diskUsed', '50G')
       expect(mockSetOutput).toHaveBeenCalledWith('diskFree', '50G')
       expect(mockSetOutput).toHaveBeenCalledWith('workflowRun', '1234567890')
+    })
+    it('should report a failed lscpu rather than an empty cpuModel', async () => {
+      mockExecSync.mockImplementation(() => {
+        throw new Error('Command failed')
+      })
+
+      await run()
+
+      expect(mockSetOutput).toHaveBeenCalledWith(
+        'cpuModel',
+        'Error executing command'
+      )
     })
     it('should handle errors and set failed status', async () => {
       mockSetOutput.mockImplementation(() => {
