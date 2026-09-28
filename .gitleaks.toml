@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: Apache-2.0
+# SPDX-FileCopyrightText: 2026 The Linux Foundation
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Generated action bundle"
+# dist/index.js is minified third-party code rebuilt from src/, which is
+# scanned. Its chained assignments ('a.fooKey=b.bar=void') match the
+# generic-api-key rule, and the identifiers change on every rebuild.
+paths = ['''^dist/index\.js$''']

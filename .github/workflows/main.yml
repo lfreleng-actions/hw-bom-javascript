@@ -27,8 +27,8 @@ on:
   pull_request:
     branches: [main]
 
-# Least-privilege default for all jobs; both jobs only read the
-# repository contents (checkout). Individual jobs override as needed.
+# Least-privilege default for all jobs; none needs more than read access
+# to the repository contents. Individual jobs override as needed.
 concurrency:
   group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
@@ -68,6 +68,60 @@ jobs:
 
       - name: Test and build
         run: npm run check-all
+
+  # GitHub runs this action straight from the repository, so dist/ has to
+  # be committed. That makes it possible for the bundle to drift from src/,
+  # and a reviewer reading the diff would see the sources change while the
+  # code that actually runs did not. Rebuild and compare.
+  check-dist:
+    name: Committed bundle matches sources 📦
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+          disable-sudo: true
+          allowed-endpoints: >
+            api.github.com:443
+            github.com:443
+            objects.githubusercontent.com:443
+            registry.npmjs.org:443
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Use Node 24.x
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Rebuild and compare against the committed bundle
+        run: |
+          # Rebuild and compare against the committed bundle
+          npm run build
+          # git diff sees modified tracked files only, so a build that
+          # emits a new artefact nobody committed would slip through.
+          # --porcelain with --untracked-files=all reports additions,
+          # modifications and deletions alike.
+          drift="$(git status --porcelain --untracked-files=all -- dist/)"
+          if [ -n "${drift}" ]; then
+            echo "The committed bundle differs from a fresh build ❌"
+            printf '%s\n' "${drift}"
+            echo "Run 'npm run build' and commit the result."
+            echo "Committed bundle is stale ❌" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          echo "Committed bundle matches the sources ✅"
+          echo "Committed bundle matches the sources ✅" \
+            >> "$GITHUB_STEP_SUMMARY"
+
   dogfood:
     name: Run hw-bom GitHub Action on this repository 🐶🍖
     runs-on: ubuntu-latest
@@ -85,26 +139,17 @@ jobs:
             registry.npmjs.org:443
             api.honeycomb.io:443
 
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - name: Use Node 24.x
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: '24.x'
-
-      - name: Install dependencies
-        run: npm ci
       - name: Collect Hardware Information 🔎
         env:
           OTEL_EXPORTER_OTLP_ENDPOINT: "https://api.honeycomb.io"
           OTEL_EXPORTER_OTLP_HEADERS:
             "x-honeycomb-team=${{ secrets.HONEYCOMB_API_KEY }}"
         id: hw-info
-        # Workspace-relative until dist/ is bundled: the action imports
-        # packages that npm ci installs only in the workspace, so the
-        # runner's own copy of it cannot load them. See #333.
-        uses: ./  # zizmor: ignore[self-repository]
+        # The self-repository form loads the action from the runner's own
+        # copy of it, as an external caller would. There is no checkout or
+        # npm ci in this job, so the step also proves dist/ is
+        # self-contained.
+        uses: $/
         with:
           otel_service_name: lfreleng-actions-hw-bom-javascript
           otel_exporter_otlp_headers:

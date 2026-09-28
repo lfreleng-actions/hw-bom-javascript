@@ -34,7 +34,12 @@ repos:
     rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
       - id: trailing-whitespace
+        # Rewriting the generated bundle would alter string literals in
+        # the code that runs, and fail the check-dist job
+        exclude: ^dist/
       - id: check-added-large-files
+        # The committed action bundle inlines every runtime dependency
+        exclude: ^dist/
       - id: check-ast
       - id: check-json
       - id: check-merge-conflict
@@ -45,6 +50,7 @@ repos:
       - id: requirements-txt-fixer
       - id: mixed-line-ending
         args: ["--fix=lf"]
+        exclude: ^dist/
       - id: no-commit-to-branch
         args:
           - --branch=dev
@@ -121,6 +127,7 @@ repos:
         exclude: |
             (?x)^(
                 dist/index.js|
+                dist/licenses.txt|
                 package-lock.json
             )$
 
