@@ -192,6 +192,12 @@ export async function run(): Promise<void> {
       'cat /proc/cpuinfo |grep "model name"|sort -u|cut -d ":" -f2|awk \'{$1=$1};1\''
     )
     const cpuVendor = runCommand("lscpu | grep Vendor | awk '{print $NF}'")
+    // Anchored so lscpu's separate 'BIOS Model name:' line is not matched.
+    // Unlike /proc/cpuinfo, which has no 'model name' field on arm64,
+    // lscpu reports a model name on both x86_64 and arm64 runners.
+    const cpuModel = runCommand(
+      'lscpu | grep "^Model name:" | cut -d ":" -f2- | awk \'{$1=$1};1\' | sort -u'
+    )
     const cpuNumProc = runCommand('getconf _NPROCESSORS_ONLN')
     const hostname = runCommand('hostname')
     const memTotal = runCommand(
@@ -209,6 +215,7 @@ export async function run(): Promise<void> {
     core.setOutput('display', display)
     core.setOutput('cpu', cpu)
     core.setOutput('cpuVendor', cpuVendor)
+    core.setOutput('cpuModel', cpuModel)
     core.setOutput('cpuNumProc', cpuNumProc)
     core.setOutput('hostname', hostname)
     core.setOutput('gpuVendor', gpuVendor)
@@ -225,6 +232,7 @@ export async function run(): Promise<void> {
         uname: uname,
         cpu: cpu,
         cpuVendor: cpuVendor,
+        cpuModel: cpuModel,
         cpuNumProc: cpuNumProc,
         hostname: hostname,
         gpuVendor: gpuVendor,

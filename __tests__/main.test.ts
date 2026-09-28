@@ -168,6 +168,8 @@ describe('GitHub Action Tests', () => {
         'cat /proc/cpuinfo |grep "model name"|sort -u|cut -d ":" -f2|awk \'{$1=$1};1\'':
           'Intel(R) Xeon(R) CPU',
         "lscpu | grep Vendor | awk '{print $NF}'": 'Intel',
+        'lscpu | grep "^Model name:" | cut -d ":" -f2- | awk \'{$1=$1};1\' | sort -u':
+          'Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz',
         'getconf _NPROCESSORS_ONLN': '2',
         hostname: 'test-host',
         'sudo lshw -C display': 'vendor: NVIDIA Corporation\nproduct: Tesla T4',
@@ -204,6 +206,10 @@ describe('GitHub Action Tests', () => {
       )
       expect(mockSetOutput).toHaveBeenCalledWith('cpu', 'Intel(R) Xeon(R) CPU')
       expect(mockSetOutput).toHaveBeenCalledWith('cpuVendor', 'Intel')
+      expect(mockSetOutput).toHaveBeenCalledWith(
+        'cpuModel',
+        'Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz'
+      )
       expect(mockSetOutput).toHaveBeenCalledWith('cpuNumProc', '2')
       expect(mockSetOutput).toHaveBeenCalledWith('hostname', 'test-host')
       expect(mockSetOutput).toHaveBeenCalledWith(

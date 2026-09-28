@@ -163,6 +163,7 @@ jobs:
           echo "Workflow RunID: ${STEPS_HW_INFO_OUTPUTS_WORKFLOWRUN}"
           echo "CPU: ${STEPS_HW_INFO_OUTPUTS_CPU}"
           echo "CPU Vendor: ${STEPS_HW_INFO_OUTPUTS_CPUVENDOR}"
+          echo "CPU Model: ${STEPS_HW_INFO_OUTPUTS_CPUMODEL}"
           echo "CPU Cores: ${STEPS_HW_INFO_OUTPUTS_CPUNUMPROC}"
           echo "GPU Vendor: ${STEPS_HW_INFO_OUTPUTS_GPUVENDOR}"
           echo "GPU Model: ${STEPS_HW_INFO_OUTPUTS_GPUMODEL}"
@@ -176,6 +177,7 @@ jobs:
           STEPS_HW_INFO_OUTPUTS_WORKFLOWRUN: ${{ steps.hw-info.outputs.workflowRun }}
           STEPS_HW_INFO_OUTPUTS_CPU: ${{ steps.hw-info.outputs.cpu }}
           STEPS_HW_INFO_OUTPUTS_CPUVENDOR: ${{ steps.hw-info.outputs.cpuVendor }}
+          STEPS_HW_INFO_OUTPUTS_CPUMODEL: ${{ steps.hw-info.outputs.cpuModel }}
           STEPS_HW_INFO_OUTPUTS_CPUNUMPROC: ${{ steps.hw-info.outputs.cpuNumProc }}
           STEPS_HW_INFO_OUTPUTS_GPUVENDOR: ${{ steps.hw-info.outputs.gpuVendor }}
           STEPS_HW_INFO_OUTPUTS_GPUMODEL: ${{ steps.hw-info.outputs.gpuModel }}

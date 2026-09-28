@@ -87,6 +87,7 @@ jobs:
           echo "Instance Type: ${{ steps.hw-info.outputs.instanceType }}"
           echo "CPU: ${{ steps.hw-info.outputs.cpu }}"
           echo "CPU Vendor: ${{ steps.hw-info.outputs.cpuVendor }}"
+          echo "CPU Model: ${{ steps.hw-info.outputs.cpuModel }}"
           echo "CPU Cores: ${{ steps.hw-info.outputs.cpuNumProc }}"
           echo "GPU Vendor: ${{ steps.hw-info.outputs.gpuVendor }}"
           echo "GPU Model: ${{ steps.hw-info.outputs.gpuModel }}"
@@ -106,8 +107,9 @@ The action provides the following outputs:
 | `workflowRun`  | Github Action Workflow ID                        |
 | `instanceType` | Instance type/size                               |
 | `uname`        | System information from uname -a                 |
-| `cpu`          | CPU model name                                   |
+| `cpu`          | CPU model name from `/proc/cpuinfo`              |
 | `cpuVendor`    | CPU vendor                                       |
+| `cpuModel`     | CPU model name from `lscpu`                      |
 | `cpuNumProc`   | Number of processors                             |
 | `hostname`     | System hostname                                  |
 | `gpuVendor`    | GPU vendor                                       |
