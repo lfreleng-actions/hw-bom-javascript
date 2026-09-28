@@ -27,7 +27,8 @@ repos:
       - id: frozen-rev-is-a-release
         name: frozen revs name a release
         language: pygrep
-        entry: '#\s*frozen:\s+(?!v?[0-9]+(\.[0-9]+)*(-[0-9]+)?\s*$|\s)'
+        # yamllint disable-line rule:line-length
+        entry: '^\s*rev:\s*\S+\s+#\s*frozen:(?!\s+v?[0-9]+(\.[0-9]+)*(-[0-9]+)?\s*$)'
         files: '^\.pre-commit-config\.yaml$'
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -116,7 +117,7 @@ repos:
       - id: reuse
 
   - repo: https://github.com/kjanat/actionlint
-    rev: 08bb2c4f0d039744455b87aef1c647fb8b66d37b  # frozen: v1.17.0
+    rev: 2da2ceb4af2c7ecc48f5b9311d85080c3971b5f0  # frozen: v1.17.0
     hooks:
       - id: actionlint-shellcheck
 
@@ -152,7 +153,7 @@ repos:
         always_run: true
 
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0494aa7fa1314e98913a41227d8f0a515b2c1049  # frozen: 0.38.2
+    rev: 4f85d46a92dc17713078e5de73f8a13190edf6fc  # frozen: 0.38.2
     hooks:
       - id: check-github-actions
       - id: check-github-workflows
