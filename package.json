@@ -46,6 +46,7 @@
     "bunyan": "^1.8.15"
   },
   "overrides": {
+    "undici": "6.28.1",
     "picomatch": "4.0.5",
     "shell-quote": "1.10.0"
   },
