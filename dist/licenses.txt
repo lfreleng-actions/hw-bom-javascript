@@ -1897,7 +1897,7 @@ THE SOFTWARE.
 
 ---
 
-undici@6.28.0 (MIT)
+undici@6.28.1 (MIT)
 
 MIT License
 
