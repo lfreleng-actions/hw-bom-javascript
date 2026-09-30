@@ -1083,7 +1083,7 @@ Apache License
 
 ---
 
-brace-expansion@1.1.18 (MIT)
+brace-expansion@1.1.21 (MIT)
 
 MIT License
 
