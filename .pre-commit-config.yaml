@@ -83,14 +83,14 @@ repos:
         types: [yaml]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: a56c0b927e6465d37cae3e97d35d4d18ab2b96cd  # frozen: v0.16.9
+    rev: f12be1ebaa5351c1fc76472de98db2c3446c8253  # frozen: v0.16.10
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 7ff8d35ae36a7d2b968f2f90b4c723e292e594ee  # frozen: v2.3.1
+    rev: 2834ec6639549dd6796205c8f011dedcd587288b  # frozen: v2.4.0
     hooks:
       - id: mypy
 
@@ -133,12 +133,12 @@ repos:
             )$
 
   - repo: https://github.com/DetachHead/basedpyright-prek-mirror
-    rev: 706e6acebe9e88c2c28d1527d3085a14b11794c4  # frozen: 1.40.1
+    rev: a11caebebdbf797e1e96611123db279b334a7675  # frozen: 1.40.2
     hooks:
       - id: basedpyright
 
   - repo: https://github.com/lfreleng-actions/gha-workflow-linter
-    rev: 0c582e431022f1c7004196fb4ea32744d1fe4843  # frozen: v1.7.0
+    rev: b23b60e5884e985320a030e6114032152e2373cd  # frozen: v1.7.1
     hooks:
       - id: gha-workflow-linter
 
