@@ -48,7 +48,8 @@
   "overrides": {
     "undici": "6.28.1",
     "picomatch": "4.0.5",
-    "shell-quote": "1.10.0"
+    "shell-quote": "^1.11.0",
+    "js-yaml": "^4.3.2"
   },
   "devDependencies": {
     "@actions/core": "^3.0.1",
