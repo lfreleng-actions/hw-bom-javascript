@@ -42,4 +42,4 @@ jobs:
     permissions:
       contents: write  # Promote (publish) the draft release for the tag
     # yamllint disable-line rule:line-length
-    uses: lfreleng-actions/generic-workflows/.github/workflows/release.yaml@42ee0a60963eede4169a7347f62da102bfc3b9b5  # v0.4.0
+    uses: lfreleng-actions/generic-workflows/.github/workflows/release.yaml@21a179e735d6da453547d98458b678fa72a94818  # v0.4.2
