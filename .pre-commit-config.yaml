@@ -83,7 +83,7 @@ repos:
         types: [yaml]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: 44b5042edab9382aba712eed4f9c7bab7a3d6a3e  # frozen: v0.17.0
+    rev: 38bfb07c0c64c304f47eb52090f8288150c77730  # frozen: v0.17.1
     hooks:
       - id: ruff
         args: [--fix, --exit-non-zero-on-fix]
@@ -138,7 +138,7 @@ repos:
       - id: basedpyright
 
   - repo: https://github.com/lfreleng-actions/gha-workflow-linter
-    rev: 8fa42d5748a293016a8d467618f3e7ee7eac9c3a  # frozen: v1.8.1
+    rev: 7bfe053dbc93ece6793014c594dfaf87c8712c47  # frozen: v1.8.3
     hooks:
       - id: gha-workflow-linter
 
