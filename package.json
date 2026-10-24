@@ -46,7 +46,7 @@
     "bunyan": "^1.8.15"
   },
   "overrides": {
-    "undici": "6.28.1",
+    "undici": "^6.29.1",
     "picomatch": "4.0.5",
     "shell-quote": "^1.11.0",
     "js-yaml": "^4.3.2"
