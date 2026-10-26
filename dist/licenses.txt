@@ -2102,7 +2102,7 @@ THE SOFTWARE.
 
 ---
 
-undici@6.28.1 (MIT)
+undici@6.29.1 (MIT)
 
 MIT License
 
