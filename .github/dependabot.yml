@@ -29,6 +29,10 @@ updates:
       semver-major-days: 30
       semver-minor-days: 7
       semver-patch-days: 3
+    groups:
+      opentelemetry:
+        patterns:
+          - "@opentelemetry/*"
     ignore:
       # Hold TypeScript on the 6.x line. The 7.x native port is not yet
       # supported by the toolchain: ts-jest peers on "<7" and
