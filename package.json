@@ -50,7 +50,9 @@
     "picomatch": "4.0.5",
     "shell-quote": "^1.11.0",
     "js-yaml": "^4.3.2",
-    "deepmerge": "4.1.1"
+    "deepmerge": "4.1.1",
+    "minimatch": "11.0.1",
+    "glob": "14.0.2"
   },
   "devDependencies": {
     "@actions/core": "^3.0.1",
