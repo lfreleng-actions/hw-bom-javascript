@@ -3,7 +3,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {jest} from '@jest/globals'
+import fs from 'node:fs'
+import os from 'node:os'
 const mockExecSync = jest.fn()
+const mockEmit = jest.fn()
 const mockGetInput = jest.fn(() => '')
 const mockSetOutput = jest.fn()
 const mockSetFailed = jest.fn()
@@ -19,6 +22,14 @@ jest.unstable_mockModule('@actions/core', () => ({
 }))
 jest.unstable_mockModule('@actions/github', () => ({
   context: mockGithubContext
+}))
+jest.unstable_mockModule('@opentelemetry/sdk-logs', () => ({
+  LoggerProvider: class {
+    getLogger() {
+      return {emit: mockEmit}
+    }
+  },
+  SimpleLogRecordProcessor: class {}
 }))
 
 const {
@@ -258,6 +269,67 @@ describe('GitHub Action Tests', () => {
       expect(mockSetOutput).toHaveBeenCalledWith('diskUsed', '50G')
       expect(mockSetOutput).toHaveBeenCalledWith('diskFree', '50G')
       expect(mockSetOutput).toHaveBeenCalledWith('workflowRun', '1234567890')
+    })
+    it('should log the BOM to stdout and to OpenTelemetry', async () => {
+      mockExecSync.mockReturnValue(Buffer.from('x'))
+      mockGithubContext.runId = 42
+      const stdout: string[] = []
+      const writeSync = jest
+        .spyOn(fs, 'writeSync')
+        .mockImplementation((fd: number, data: unknown) => {
+          if (fd === 1) stdout.push(String(data))
+          return Buffer.byteLength(String(data))
+        })
+
+      try {
+        await run()
+      } finally {
+        writeSync.mockRestore()
+      }
+
+      const msg = 'Hardware Bill of Materials for Workflow Run 42'
+      const bom = {
+        cloud: 'x',
+        instanceType: 'Unknown Instance Type',
+        uname: 'x',
+        cpu: 'x',
+        cpuVendor: 'x',
+        cpuModel: '',
+        cpuNumProc: 'x',
+        hostname: 'x',
+        gpuVendor: '',
+        gpuModel: '',
+        memTotal: 'x',
+        diskTotal: 'x',
+        diskUsed: 'x',
+        diskFree: 'x'
+      }
+      const primitives = {
+        level: 30,
+        pid: process.pid,
+        hostname: os.hostname(),
+        name: 'github-actions-hw-bom',
+        msg
+      }
+
+      // stdout is written synchronously, as one JSON line per record
+      const lines = stdout.join('').split('\n').filter(Boolean)
+      expect(lines).toHaveLength(1)
+      const record = JSON.parse(lines[0])
+      expect(record).toEqual({
+        ...primitives,
+        time: expect.any(Number),
+        42: bom
+      })
+
+      // OpenTelemetry gets the primitive fields only: the nested BOM
+      // object and `time` are dropped, and nothing else is added
+      expect(mockEmit).toHaveBeenCalledTimes(1)
+      expect(mockEmit).toHaveBeenCalledWith({
+        severityText: 'INFO',
+        body: msg,
+        attributes: primitives
+      })
     })
     it('should report a failed lscpu rather than an empty cpuModel', async () => {
       mockExecSync.mockImplementation(() => {

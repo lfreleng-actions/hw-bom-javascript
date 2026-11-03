@@ -33,7 +33,7 @@ configures the instrumentation and uses the following components:
 
 - **NodeSDK**: Initializes the OpenTelemetry SDK with a resource, log record
    processors, and instrumentations.
-- **BunyanInstrumentation**: Automatically instruments Bunyan logs.
+- **PinoInstrumentation**: Automatically instruments pino logs.
 - **OTLPLogExporter**: Exports logs to an OTLP-compatible endpoint.
 
 ### Configuration

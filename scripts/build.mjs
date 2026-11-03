@@ -39,9 +39,6 @@ const result = await build({
   legalComments: 'none',
   metafile: true,
   logLevel: 'warning',
-  // bunyan loads this optional native addon inside a try/catch and runs
-  // without it; there is nothing to bundle.
-  external: ['dtrace-provider'],
   // Bundled CommonJS dependencies call require() for Node built-ins, which
   // an ES module does not provide.
   banner: {
@@ -62,7 +59,7 @@ for (const input of Object.keys(result.metafile.inputs)) {
 // for that exact version: the section must be the last in the README, as
 // it is copied to the end. Keying by version makes an upgrade fail the
 // build until the new README has been checked too.
-const README_LICENCES = new Map([['safe-json-stringify@1.2.0', 'License']])
+const README_LICENCES = new Map()
 
 // Licence, COPYING and NOTICE files at the package root. A matching
 // directory, such as @opentelemetry/instrumentation's LICENSES/ covering

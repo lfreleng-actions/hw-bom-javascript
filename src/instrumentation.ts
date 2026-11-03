@@ -9,7 +9,7 @@ import {
 } from '@opentelemetry/sdk-logs'
 import {resourceFromAttributes} from '@opentelemetry/resources'
 import * as core from '@actions/core'
-import {BunyanInstrumentation} from '@opentelemetry/instrumentation-bunyan'
+import {PinoInstrumentation} from '@opentelemetry/instrumentation-pino'
 import {
   ATTR_SERVICE_NAME,
   ATTR_SERVICE_VERSION
@@ -39,7 +39,7 @@ const sdk = new NodeSDK({
     }),
     new SimpleLogRecordProcessor({exporter: new ConsoleLogRecordExporter()})
   ],
-  instrumentations: [new BunyanInstrumentation()]
+  instrumentations: [new PinoInstrumentation()]
 })
 
 try {
