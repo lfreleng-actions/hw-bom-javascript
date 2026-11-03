@@ -3,38 +3,26 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { defineConfig } from "eslint/config";
-import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import jest from "eslint-plugin-jest";
-import globals from "globals";
-import tsParser from "@typescript-eslint/parser";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
+import tseslint from "typescript-eslint";
+import { flatConfigs as importX } from "eslint-plugin-import-x";
+import jest from "eslint-plugin-jest";
+import prettierRecommended from "eslint-plugin-prettier/recommended";
+import prettier from "eslint-config-prettier";
+import globals from "globals";
 
 export default defineConfig([{
-    extends: fixupConfigRules(compat.extends(
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
-        "plugin:import-x/errors",
-        "plugin:import-x/warnings",
-        "plugin:import-x/typescript",
-        "plugin:prettier/recommended",
-        "prettier",
-    )),
+    extends: [
+        js.configs.recommended,
+        tseslint.configs.recommended,
+        importX.errors,
+        importX.warnings,
+        importX.typescript,
+        prettierRecommended,
+        prettier,
+    ],
 
     plugins: {
-        "@typescript-eslint": fixupPluginRules(typescriptEslint),
         jest,
     },
 
@@ -44,7 +32,7 @@ export default defineConfig([{
             ...globals.jest,
         },
 
-        parser: tsParser,
+        parser: tseslint.parser,
         ecmaVersion: 9,
         sourceType: "module",
     },

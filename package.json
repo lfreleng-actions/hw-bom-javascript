@@ -56,13 +56,9 @@
   "devDependencies": {
     "@actions/core": "^3.0.1",
     "@actions/github": "^9.1.1",
-    "@eslint/compat": "^2.1.1",
-    "@eslint/eslintrc": "3.3.7",
     "@eslint/js": "10.0.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.6.6",
-    "@typescript-eslint/eslint-plugin": "^8.72.1",
-    "@typescript-eslint/parser": "^8.71.2",
     "concurrently": "^10.0.6",
     "esbuild": "0.28.2",
     "eslint": "^10.13.0",
@@ -75,7 +71,8 @@
     "jest": "^30.5.2",
     "prettier": "^3.9.10",
     "ts-jest": "^29.4.15",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "8.72.1"
   },
   "jest": {
     "preset": "ts-jest/presets/default-esm",
