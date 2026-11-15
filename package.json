@@ -55,9 +55,8 @@
     "glob": "14.0.2"
   },
   "devDependencies": {
-    "@actions/core": "^3.0.1",
-    "@actions/github": "^9.1.1",
     "@eslint/js": "10.0.1",
+    "@jest/globals": "30.5.2",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.6.6",
     "concurrently": "^10.0.7",
@@ -112,29 +111,6 @@
         "ts-jest",
         {
           "useESM": true
-        }
-      ]
-    }
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:@typescript-eslint/recommended",
-      "prettier"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "project": "./tsconfig.json",
-      "tsconfigRootDir": "./"
-    },
-    "plugins": [
-      "@typescript-eslint"
-    ],
-    "rules": {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          "argsIgnorePattern": "^_"
         }
       ]
     }
