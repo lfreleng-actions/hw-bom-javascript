@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: Apache-2.0
+// SPDX-FileCopyrightText: 2026 The Linux Foundation
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "src/index.ts",
+    "scripts/build.mjs",
+    "__tests__/**/*.test.ts",
+    "eslint.config.mjs"
+  ],
+  "project": ["src/**/*.ts", "scripts/**/*.mjs", "__tests__/**/*.ts", "__fixtures__/**/*.ts", "*.config.mjs"],
+  "ignore": ["dist/**"],
+  "ignoreExportsUsedInFile": true,
+  "ignoreBinaries": ["tsc", "concurrently", "prettier", "eslint", "jest"],
+  "ignoreDependencies": ["concurrently", "eslint-plugin-import-x", "jest", "prettier"]
+}
