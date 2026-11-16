@@ -9,7 +9,7 @@
  * strips the TypeScript types itself; `tsc --noEmit` remains the type
  * checker.
  *
- * Output is deterministic, which the check-dist CI job relies on: it
+ * Output is deterministic, which the CI bundle check relies on: it
  * rebuilds and fails if the result differs from the committed bundle.
  */
 
